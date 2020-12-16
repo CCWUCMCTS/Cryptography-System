@@ -1,6 +1,7 @@
+from cipherbase import CipherBase
 from caesar import Caesar
 from multiplicativecipher import MultiplicativeCipher
-class AffineCipher(object):
+class AffineCipher(CipherBase):
     c=Caesar()
     m=MultiplicativeCipher()
     def getInfo(self):

@@ -1,4 +1,4 @@
-from cipherbase import CipherBase
+from cipherbase import CipherBase,gcd,exgcd,inv
 class MultiplicativeCipher(CipherBase):
     base = 26
     def getInfo(self):
@@ -6,7 +6,7 @@ class MultiplicativeCipher(CipherBase):
     def changeBase(self,newbase):
         self.base = newbase
     def Encrypt(self,messages,key):
-        if key <= 0 or self.gcd(key,self.base) != 1:
+        if key <= 0 or gcd(key,self.base) != 1:
             print('A wrong key!')
             return 'ERROR'
         ret=''
@@ -23,10 +23,10 @@ class MultiplicativeCipher(CipherBase):
             ret+=chr(cur)
         return ret
     def Decrypt(self,messages,key):
-        if key <= 0 or self.gcd(key,self.base) != 1:
+        if key <= 0 or gcd(key,self.base) != 1:
             print('A wrong key!')
             return 'ERROR'
-        key=self.inv(key,self.base)
+        key=inv(key,self.base)
         return self.Encrypt(messages,key)
         
 if __name__ == "__main__":
