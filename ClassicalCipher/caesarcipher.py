@@ -1,5 +1,5 @@
 from cipherbase import CipherBase
-class Caesar(CipherBase):
+class CaesarCipher(CipherBase):
     def getInfo(self):
         print('This is a caesar cipher.')
     def Encrypt(self,messages,key):
@@ -32,7 +32,7 @@ class Caesar(CipherBase):
         return ret
 
 if __name__ == "__main__":
-    a = Caesar()
+    a = CaesarCipher()
     a.getInfo()
     messages='This is a message.'
     key=17

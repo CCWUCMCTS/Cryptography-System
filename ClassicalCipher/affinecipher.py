@@ -1,8 +1,8 @@
 from cipherbase import CipherBase
-from caesar import Caesar
+from caesarcipher import CaesarCipher
 from multiplicativecipher import MultiplicativeCipher
 class AffineCipher(CipherBase):
-    c=Caesar()
+    c=CaesarCipher()
     m=MultiplicativeCipher()
     def getInfo(self):
         print('This is a affine cipher.')

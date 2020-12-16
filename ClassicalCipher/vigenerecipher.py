@@ -2,6 +2,7 @@ from cipherbase import CipherBase
 class VigenereCipher(CipherBase):
     def getInfo(self):
         print('This is a vigenere cipher.')
+
     def Encrypt(self,messages,akey):
         if akey.isalpha() == False:
             print('A wrong key!')
@@ -29,6 +30,7 @@ class VigenereCipher(CipherBase):
                 i+=1
             ret+=chr(cur)
         return ret
+
     def Decrypt(self,messages,akey):
         if akey.isalpha() == False:
             print('A wrong key!')
@@ -56,6 +58,8 @@ class VigenereCipher(CipherBase):
                 i+=1
             ret+=chr(cur)
         return ret
+
+        
 if __name__ == "__main__":
     a=VigenereCipher()
     messages='This is a mEssaGe.'
