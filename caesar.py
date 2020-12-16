@@ -4,5 +4,9 @@ class Caesar(CipherBase):
         print('This is a Caesar cipher.')
     def Encrypt(self,message,key):
         pass
-a = Caesar()
-a.getInfo()
+
+def main():
+    a = Caesar()
+    a.getInfo()
+if __name__ == "__main__":
+    main()
