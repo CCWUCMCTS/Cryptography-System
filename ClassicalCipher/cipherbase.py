@@ -17,8 +17,12 @@ class CipherBase:
             x, y, q = self.exgcd(b, a % b)        
             x, y = y, (x - (a // b) * y)         
             return x, y, q
-def main():
+    def inv(self,a,b):
+        x,_,z=self.exgcd(a,b)
+        if z != 1:
+            return -1
+        return x%b
+
+if __name__ == "__main__":
     a=CipherBase()
     print(a.exgcd(5,26))
-if __name__ == "__main__":
-    main()

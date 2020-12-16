@@ -1,7 +1,7 @@
-from cipherbase import *
+from cipherbase import CipherBase
 class Caesar(CipherBase):
     def getInfo(self):
-        print('This is a Caesar cipher.')
+        print('This is a caesar cipher.')
     def Encrypt(self,messages,key):
         ret=''
         for message in messages:
@@ -31,7 +31,7 @@ class Caesar(CipherBase):
             ret+=chr(cur)
         return ret
 
-def main():
+if __name__ == "__main__":
     a = Caesar()
     a.getInfo()
     messages='This is a message.'
@@ -40,5 +40,3 @@ def main():
     t2=a.Decrypt(t1,key)
     print(t1)
     print(t2)
-if __name__ == "__main__":
-    main()
