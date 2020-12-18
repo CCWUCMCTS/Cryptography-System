@@ -45,10 +45,7 @@ class SM4(CipherBase):
     # But the CK[0] of the author is wrong.
     rk = []
     
-    def a32CycleLeftMove(self,num,i):
-        i = i%32
-        return (((num>>(32-i))|(num<<i)))&0xffffffff
-
+    
     def t(self,input32):
         ret = self.cutNumber2List(input32,32,8)
         for i in range(4):
