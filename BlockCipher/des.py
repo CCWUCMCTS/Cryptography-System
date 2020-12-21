@@ -185,14 +185,20 @@ class DES(CipherBase):
 
 if __name__ == '__main__':
     d = DES()
-    
+    '''
     m = b'\x87\x87\x87\x87\x87\x87\x87\x87'
     k = b'\x0E\x32\x92\x32\xEA\x6D\x0D\x73'
-    
+    '''
     '''
     m = b'\x01\x23\x45\x67\x89\xab\xcd\xef'
     k = b'\x13\x34\x57\x79\x9b\xbc\xdf\xf1'
     '''
+    '''
+    m = b'\x00\x00\x00\x00\x00\x00\x00\x00'
+    k = m
+    '''
+    m = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
+    k = m
     d.generateKey(k)
     t=d.aBlockEncode(m)
     print(showbytes(t))
