@@ -197,10 +197,23 @@ if __name__ == '__main__':
     m = b'\x00\x00\x00\x00\x00\x00\x00\x00'
     k = m
     '''
+    '''
     m = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
     k = m
+    '''
+    m = b'zzzzzzzz'
+    k = m
+    c = b'6\xd5\x9b{p\x1f\x976'
     d.generateKey(k)
+    x=d.aBlockDecode(c)
+    for i in range(len(x)):
+        print(chr(x[i]^ord('z')))
+    '''
+    for i in k:
+        print('0'+str(bin(i))[2:],end='')
+    
     t=d.aBlockEncode(m)
     print(showbytes(t))
     print(showbytes(d.aBlockDecode(t)))
+    '''
 
