@@ -2,19 +2,10 @@ class CipherBase:
     def getInfo(self):
         print('This is a base class for cipher.')
 
-    def Encrypt(self):
+    def hash(self):
         pass
 
-    def Decrypt(self):
-        pass
-
-    def generateKey(self,key):
-        pass
-
-    def aBlockEncode(self,messages):
-        pass
-
-    def aBlockDecode(self,messages):
+    def aBlockHash(self):
         pass
 
     def a32CycleLeftMove(self,num,i):
@@ -23,6 +14,7 @@ class CipherBase:
     def aCycleLeftMove(self,num,bas,i):
         i = i%bas
         return (((num>>(bas-i))|(num<<i)))&((1<<bas)-1)
+        
     def cutNumber2List(self,num,total,piece):
         if total % piece != 0:
             raise Exception
@@ -64,6 +56,8 @@ class CipherBase:
             ret <<= 1
             ret |= bit
         return ret
+    def addm(self,a1,a2,mod=2**32):
+        return (a1+a2)%mod
 def showbytes(b):
     return [hex(i) for i in list(b)]
 def showbytesbin(b):

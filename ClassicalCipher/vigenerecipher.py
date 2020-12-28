@@ -62,8 +62,9 @@ class VigenereCipher(CipherBase):
         
 if __name__ == "__main__":
     a=VigenereCipher()
-    messages='This is a mEssaGe.'
-    key='sihw'
+    messages='RFMRHNS{Tlsw_Xctc_Tn!!}'
+    key='playfun'
+    print(a.Decrypt(messages,key))
     t1=a.Encrypt(messages,key)
     t2=a.Decrypt(t1,key)
     print(t1+'\n'+t2)
