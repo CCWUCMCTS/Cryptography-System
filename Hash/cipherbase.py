@@ -58,6 +58,12 @@ class CipherBase:
         return ret
     def addm(self,a1,a2,mod=2**32):
         return (a1+a2)%mod
+    def i2LittleStr(self,number,cnt):
+        lst = self.i2b(number,cnt)[::-1]
+        ret = ''
+        for i in lst:
+            ret += hex(i)[2:]
+        return ret
 def showbytes(b):
     return [hex(i) for i in list(b)]
 def showbytesbin(b):
