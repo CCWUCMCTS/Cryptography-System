@@ -72,4 +72,5 @@ class Encrypt(CipherBase):
 if __name__ == '__main__':
     a = Encrypt()
     s = b'zzzzzzzz'
+    # 可以拆成filepath，filename
     a.encryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt',s,s,mode='cfb',padding='zero',coding='base64',cfb_s=8)

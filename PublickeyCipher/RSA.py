@@ -1,7 +1,9 @@
 from cipherbase import CipherBase
-from cipherbase import getPrime,speed,inv,gcd
+from cipherbase import getPrime,speed,inv,gcd,ASN1Integer
 from random import randint
+import os
 class RSA(CipherBase):
+    # 使用PKCS #1存储密钥
     def getInfo(self):
         print('这是一个RSA密码。')
     def generateKey(self,nbits=512):
@@ -23,7 +25,9 @@ class RSA(CipherBase):
         return speed(self.b2i(messageBytes),self.e,self.n)
     def Decrypt(self,messageInt):
         return speed(messageInt,self.d,self.n)
-
+    def outputPublicKey(self,filepath,filename):
+        path = os.path.join(filepath,filename)
+        
 if __name__ == "__main__":
     a = RSA()
     a.generateKey(1024)

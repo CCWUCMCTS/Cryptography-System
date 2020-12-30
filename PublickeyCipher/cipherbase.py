@@ -86,8 +86,31 @@ def exgcd(a,b):
         x1 = x; y1 = y
         a = b; b = r; r = a % b
         q = (a - r) // b
-    return x, y, b  
+    return x, y, b 
+def i2b_ASN1(n):
+    length = (len(bin(n)[2:]) + 7) // 8
+    data = int.to_bytes(n,length,'big')
+    return length,data
+def ASN1Integer(n):
+    '''
+        ASN.1标准中，INTEGER数据类型号为02。
+        若数据长度小于128 Bytes，后接一个字节的数据长度，再接数据。
+        否则，接一个0x8?，?代表数据长度为几个字节，之后为?字节的数据长度，再接数据。
+        注意此处的数据为有符号的，即如果数据最高位为1，前面必须再接0x00，以避免产生负数。
+        而根据观察，数据长度不需要带符号位。
+        由此，这个函数不能处理负数的情况，如果数据长度非常非常大，也不能处理。
 
+    '''
+    length,data = i2b_ASN1(n)
+    if data[0] >= 8:
+        data = b'\x00' + data
+        length += 1
+    if length < 128:
+        return b'\x02' + int.to_bytes(length,1,'big') + data
+    else:
+        lengthlength,lengthdata = i2b_ASN1(length)
+        return b'\x02' + int.to_bytes(128+lengthlength,1,'big') + lengthdata + data
+    
 '''
 def exgcd(a,b):     
     if b == 0:         
@@ -106,7 +129,7 @@ def inv(a,b):
 
 def speed(a,b,p):
     ans = 1
-    cur = a
+    cur = a % p
     while b != 0:
         if b & 1:
             ans = ans * cur % p
@@ -141,11 +164,19 @@ def getPrime(n):
         num = int('1'+''.join([str(randint(0,1)) for i in range(n-2)])+'1',2)
         if Miller_Rabin(num):
             return num
+def nhex(n):
+    ret = hex(n)[2:]
+    if len(ret) % 2 == 1:
+        return '0' + ret
+    else:
+        return ret
 if __name__ == "__main__":
+    '''
     a=CipherBase()
     print(speed(2,133424343434,3557),pow(2,133424343434,3557))
-    print(getPrime(512))
+    print(getPrime(512))_
     s=[0]*10
-    #print(gcd(14,6))
-    print(inv(5,26))
+    '''
+    print(''.join([nhex(i) for i in ASN1Integer(119152746204719379192177095412096794108940063365603212679296595822719164643434098119461461470707465699340053666279739625416062163167163828197825888554759815442499344851200889391970125108425540919170488979310987121684460934524319290848671177892251182661648620583323162090568372503461307181715338700178589541349)]))
+    
     
