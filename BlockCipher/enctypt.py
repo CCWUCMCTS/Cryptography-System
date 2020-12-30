@@ -47,7 +47,7 @@ class Encrypt(CipherBase):
                 print('没有整除，问题不大。')
             IV = IV[cfb_s//8:] + tmp
             self.cdata += tmp
-    def encryptFile(self,filename,key,IV,mode='cbc',padding='zero',coding='base64',cfb_s=64):
+    def encryptFile(self,filename,key,IV,mode='cbc',padding='zero',coding='base64',cfb_s=8):
         self.readFile(filename)
         self.aPadding(padding)
         if mode.lower() == 'ecb':
@@ -62,7 +62,6 @@ class Encrypt(CipherBase):
             
         if coding.lower() == 'base64':
             self.cdata = base64.b64encode(self.cdata)
-            #self.cdata = base64.b64encode(self.cdata.decode('gb2312').encode('utf-8'))
             
         elif coding.lower() == 'hex':
             self.cdata = ''.join([hex(i)[2:] for i in self.cdata]).encode('utf-8')
