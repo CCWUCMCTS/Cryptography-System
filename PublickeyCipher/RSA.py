@@ -19,8 +19,17 @@ class RSA(CipherBase):
         print('e =',hex(self.e))
         print('d =',hex(self.d))
         print('n =',hex(self.n))
+    def Encrypt(self,messageBytes):
+        return speed(self.b2i(messageBytes),self.e,self.n)
+    def Decrypt(self,messageInt):
+        return speed(messageInt,self.d,self.n)
+
 if __name__ == "__main__":
     a = RSA()
     a.generateKey(1024)
     #print(a.__dict__.items())
-    print(a.n)
+    print(a.b2i('hello'.encode('utf-8')))
+    x=a.Encrypt('hello'.encode('utf-8'))
+    print(x)
+    y=a.Decrypt(x)
+    print(y)
