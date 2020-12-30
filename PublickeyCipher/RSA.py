@@ -13,7 +13,14 @@ class RSA(CipherBase):
         while gcd(self.e,self.eulerN) != 1:
             self.e = randint(2,self.eulerN)
         self.d = inv(self.e,self.eulerN)
+        print('密钥生成成功！')
+        #print('p =',hex(self.p))
+        #print('q =',hex(self.q))
+        print('e =',hex(self.e))
+        print('d =',hex(self.d))
+        print('n =',hex(self.n))
 if __name__ == "__main__":
     a = RSA()
-    a.generateKey()
-    print(a.__dict__.items())
+    a.generateKey(1024)
+    #print(a.__dict__.items())
+    print(a.n)

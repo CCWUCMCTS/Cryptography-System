@@ -69,11 +69,26 @@ def showbytes(b):
 def showbytesbin(b):
     return [bin(i) for i in list(b)]
 def gcd(a,b):
-    if b == 0:
-        return a
-    else:
-        return gcd(b,a%b)
+    while b != 0:
+        a,b = b,a%b
+    return a
 
+def exgcd(a,b):
+    x0 = 1; y0 = 0
+    x1 = 0; y1 = 1
+    x = 0; y = 1  
+    r = a % b
+    q = (a - r) // b
+    while r != 0:
+        x = x0 - q * x1
+        y = y0 - q * y1
+        x0 = x1; y0 = y1
+        x1 = x; y1 = y
+        a = b; b = r; r = a % b
+        q = (a - r) // b
+    return x, y, b  
+
+'''
 def exgcd(a,b):     
     if b == 0:         
         return 1, 0, a     
@@ -81,7 +96,8 @@ def exgcd(a,b):
         x, y, q = exgcd(b, a % b)        
         x, y = y, (x - (a // b) * y)         
         return x, y, q
-
+        '''
+        
 def inv(a,b):
     x,_,z=exgcd(a,b)
     if z != 1:
@@ -130,4 +146,6 @@ if __name__ == "__main__":
     print(speed(2,133424343434,3557),pow(2,133424343434,3557))
     print(getPrime(512))
     s=[0]*10
+    #print(gcd(14,6))
+    print(inv(5,26))
     
