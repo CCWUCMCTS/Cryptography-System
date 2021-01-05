@@ -1,5 +1,5 @@
 from cipherbase import CipherBase
-from cipherbase import getPrime,speed,inv,gcd,ASN1Integer
+from cipherbase import getPrime,speed,inv,gcd,derRSAPublicKey,derRSAPrivateKey
 from random import randint
 import os
 class RSA(CipherBase):
@@ -18,6 +18,8 @@ class RSA(CipherBase):
         print('密钥生成成功！')
         #print('p =',hex(self.p))
         #print('q =',hex(self.q))
+        #for i in derRSAPrivateKey(self.n,self.e,self.d,self.p,self.q):
+            #print(i.decode('utf-8'))
         print('e =',hex(self.e))
         print('d =',hex(self.d))
         print('n =',hex(self.n))
@@ -25,12 +27,23 @@ class RSA(CipherBase):
         return speed(self.b2i(messageBytes),self.e,self.n)
     def Decrypt(self,messageInt):
         return speed(messageInt,self.d,self.n)
-    def outputPublicKey(self,filepath,filename):
+    def outputPrivateKey(self,filepath,filename='private.pem'):
         path = os.path.join(filepath,filename)
-        
+        with open(path,'w') as f:
+            for i in derRSAPrivateKey(self.n,self.e,self.d,self.p,self.q):
+                f.write(i.decode('utf-8')+'\n')
+    def outputPublicKey(self,filepath,filename='public.pem'):
+        path = os.path.join(filepath,filename)
+        with open(path,'w') as f:
+            for i in derRSAPublicKey(self.n,self.e):
+                f.write(i.decode('utf-8')+'\n')
+
+    
 if __name__ == "__main__":
     a = RSA()
-    a.generateKey(1024)
+    a.generateKey(512)
+    a.outputPublicKey('C:\\Users\\wwwwww931121\\Desktop')
+    a.outputPrivateKey('C:\\Users\\wwwwww931121\\Desktop')
     #print(a.__dict__.items())
     print(a.b2i('hello'.encode('utf-8')))
     x=a.Encrypt('hello'.encode('utf-8'))
