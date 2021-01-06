@@ -10,18 +10,32 @@ class RSA(CipherBase):
         self.p = getPrime(nbits)
         self.q = getPrime(nbits)
         self.n = self.p * self.q
-        self.eulerN = (self.p - 1) * (self.q - 1)
-        self.e = randint(2,self.eulerN-1)
-        while gcd(self.e,self.eulerN) != 1:
-            self.e = randint(2,self.eulerN)
-        self.d = inv(self.e,self.eulerN)
+        eulerN = (self.p - 1) * (self.q - 1)
+        self.e = randint(2,eulerN-1)
+        while gcd(self.e,eulerN) != 1:
+            self.e = randint(2,eulerN)
+        self.d = inv(self.e,eulerN)
+        self.mode = 'private'
         print('密钥生成成功！')
 
-
     def Encrypt(self,messageBytes):
-        return speed(self.b2i(messageBytes),self.e,self.n)
+        if self.b2i(messageBytes) >= self.n:
+            print('消息过长无法加密。')
+        return self.i2b(speed(self.b2i(messageBytes),self.e,self.n))
 
-    def Decrypt(self,messageInt):
+    def Decrypt(self,messageBytes):
+        if self.mode != 'private':
+            raise('请载入一个私钥。')
+        return self.i2b(speed(self.b2i(messageBytes),self.d,self.n))
+
+    def testEncrypt(self,messageInt):
+        if messageInt >= self.n:
+            print('消息过长无法加密。')
+        return speed(messageInt,self.e,self.n)
+
+    def testDecrypt(self,messageInt):
+        if self.mode != 'private':
+            raise('请载入一个私钥。')
         return speed(messageInt,self.d,self.n)
 
     def outputPrivateKey(self,filepath,filename='private',sep='\n'):
@@ -47,37 +61,41 @@ class RSA(CipherBase):
             f.write('n = '+str(self.n)+sep)
             f.write('e = '+str(self.e)+sep)
 
-    def inputPrivateKey(self,filepath,sep='\n'):
-        with open(filepath,'r') as f:
+    def inputKey(self,keypath):
+        self.n=self.e=self.d=self.p=self.q=1
+        with open(keypath,'r') as f:
             lines = f.readlines()
             for line in lines:
                 line = line.strip().split(' ')
-                if line[0].lower == 'n':
+                if line[0].lower() == 'n':
                     self.n = int(line[2])
-                elif line[0].lower == 'e':
+                elif line[0].lower() == 'e':
                     self.e = int(line[2])
-                elif line[0].lower == 'd':
+                elif line[0].lower() == 'd':
                     self.d = int(line[2])
-                elif line[0].lower == 'p':
+                elif line[0].lower() == 'p':
                     self.p = int(line[2])
-                elif line[0].lower == 'q':
+                elif line[0].lower() == 'q':
                     self.q = int(line[2])
-        print(self.n)
-        print(self.e)
-        print(self.d)
-        print(self.p)
-        print(self.q)
+        if self.n == 1 or self.e == 1:
+            raise('请检查n和e。')
+        self.mode = 'public'
+        if self.d == 1 or self.p == 1 or self.q == 1:
+            print('公钥加载成功，当前运行模式为：仅加密。')
+            return
+        self.mode = 'private'
+        print('私钥加载成功，当前运行模式为：加密解密。')
     
 if __name__ == "__main__":
     a = RSA()
     a.generateKey(512)
     a.outputPublicKey('C:\\Users\\wwwwww931121\\Desktop')
     a.outputPrivateKey('C:\\Users\\wwwwww931121\\Desktop')
-    a.inputPrivateKey('C:\\Users\\wwwwww931121\\Desktop\\private.txt')
-    '''
+    a.inputKey('C:\\Users\\wwwwww931121\\Desktop\\private.txt')
+    
     print(a.b2i('hello'.encode('utf-8')))
     x=a.Encrypt('hello'.encode('utf-8'))
     print(x)
     y=a.Decrypt(x)
     print(y)
-    '''
+    
