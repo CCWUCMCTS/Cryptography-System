@@ -16,37 +16,68 @@ class RSA(CipherBase):
             self.e = randint(2,self.eulerN)
         self.d = inv(self.e,self.eulerN)
         print('密钥生成成功！')
-        #print('p =',hex(self.p))
-        #print('q =',hex(self.q))
-        #for i in derRSAPrivateKey(self.n,self.e,self.d,self.p,self.q):
-            #print(i.decode('utf-8'))
-        print('e =',hex(self.e))
-        print('d =',hex(self.d))
-        print('n =',hex(self.n))
+
+
     def Encrypt(self,messageBytes):
         return speed(self.b2i(messageBytes),self.e,self.n)
+
     def Decrypt(self,messageInt):
         return speed(messageInt,self.d,self.n)
-    def outputPrivateKey(self,filepath,filename='private.pem'):
-        path = os.path.join(filepath,filename)
-        with open(path,'w') as f:
-            for i in derRSAPrivateKey(self.n,self.e,self.d,self.p,self.q):
-                f.write(i.decode('utf-8')+'\n')
-    def outputPublicKey(self,filepath,filename='public.pem'):
-        path = os.path.join(filepath,filename)
-        with open(path,'w') as f:
-            for i in derRSAPublicKey(self.n,self.e):
-                f.write(i.decode('utf-8')+'\n')
 
+    def outputPrivateKey(self,filepath,filename='private',sep='\n'):
+        pempath = os.path.join(filepath,filename+'.pem')
+        with open(pempath,'w') as f:
+            for i in derRSAPrivateKey(self.n,self.e,self.d,self.p,self.q):
+                f.write(i.decode('utf-8')+sep)
+        txtpath = os.path.join(filepath,filename+'.txt')
+        with open(txtpath,'w') as f:
+            f.write('n = '+str(self.n)+sep)
+            f.write('e = '+str(self.e)+sep)
+            f.write('d = '+str(self.d)+sep)
+            f.write('p = '+str(self.p)+sep)
+            f.write('q = '+str(self.q)+sep)
+
+    def outputPublicKey(self,filepath,filename='public',sep='\n'):
+        pempath = os.path.join(filepath,filename+'.pem')
+        with open(pempath,'w') as f:
+            for i in derRSAPublicKey(self.n,self.e):
+                f.write(i.decode('utf-8')+sep)
+        txtpath = os.path.join(filepath,filename+'.txt')
+        with open(txtpath,'w') as f:
+            f.write('n = '+str(self.n)+sep)
+            f.write('e = '+str(self.e)+sep)
+
+    def inputPrivateKey(self,filepath,sep='\n'):
+        with open(filepath,'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                line = line.strip().split(' ')
+                if line[0].lower == 'n':
+                    self.n = int(line[2])
+                elif line[0].lower == 'e':
+                    self.e = int(line[2])
+                elif line[0].lower == 'd':
+                    self.d = int(line[2])
+                elif line[0].lower == 'p':
+                    self.p = int(line[2])
+                elif line[0].lower == 'q':
+                    self.q = int(line[2])
+        print(self.n)
+        print(self.e)
+        print(self.d)
+        print(self.p)
+        print(self.q)
     
 if __name__ == "__main__":
     a = RSA()
     a.generateKey(512)
     a.outputPublicKey('C:\\Users\\wwwwww931121\\Desktop')
     a.outputPrivateKey('C:\\Users\\wwwwww931121\\Desktop')
-    #print(a.__dict__.items())
+    a.inputPrivateKey('C:\\Users\\wwwwww931121\\Desktop\\private.txt')
+    '''
     print(a.b2i('hello'.encode('utf-8')))
     x=a.Encrypt('hello'.encode('utf-8'))
     print(x)
     y=a.Decrypt(x)
     print(y)
+    '''

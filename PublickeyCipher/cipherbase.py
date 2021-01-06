@@ -157,7 +157,7 @@ def derRSAPrivateKey(n,e,d,p,q):
     data = derTag(derInteger(0)+derInteger(n)+derInteger(e)+derInteger(d)+derInteger(p)+derInteger(q)+derInteger(para1)+derInteger(para2)+derInteger(para3))
     
     data = derTag(derInteger(0)+b'\x30\x0d\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x01\x01\x05\x00'+derOctetString(data))
-    print(showbytes(data))
+    #print(showbytes(data))
     rsapk = base64.b64encode(data)
     ret = []
     ret.append(b'-----BEGIN PRIVATE KEY-----')
