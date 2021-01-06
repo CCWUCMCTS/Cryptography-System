@@ -320,3 +320,5 @@ if __name__ == "__main__":
     #for i in x:
         #print(i.decode('utf-8'))
     '''
+    print(inv(7,18))
+    print(speed(2,7,19))

@@ -11,6 +11,7 @@ class usefulRSA():
         self.a = RSA()
         if keypath != None:
             self.a.inputKey(keypath)
+            self.mode=self.a.mode
             return
         if outpath == None:
             outpath = './'
@@ -20,28 +21,29 @@ class usefulRSA():
 
     def setKey(self, outpath):
         self.a.inputKey(outpath)
+        self.mode=self.a.mode
 
-    def fileEncrypt(self, filepath):
+    def fileEncrypt(self, filepath,suffix='.encrypt'):
         f1 = open(filepath, 'rb')
         c = self.a.Encrypt(f1.read())
         f1.close()
-        f2 = open(filepath+'.encrypt', 'wb')
+        f2 = open(filepath+suffix, 'wb')
         f2.write(c)
         f2.close()
 
-    def fileDecrypt(self, filepath):
+    def fileDecrypt(self, filepath,suffix='.decrypt'):
         f1 = open(filepath, 'rb')
         m = self.a.Decrypt(f1.read())
         f1.close()
-        f2 = open(filepath+'.decrypt', 'wb')
+        f2 = open(filepath+suffix, 'wb')
         f2.write(m)
         f2.close()
 
-    def strEncrypt(self, messageStr):
-        return self.a.Encrypt(messageStr.encode('utf-8'))
+    def byteEncrypt(self, messageByte):
+        return self.a.Encrypt(messageByte)
 
-    def strDecrypt(self, messageBytes):
-        return self.a.Decrypt(messageBytes).decode('utf-8')
+    def byteDecrypt(self, messageBytes):
+        return self.a.Decrypt(messageBytes)
 
 
 if __name__ == "__main__":

@@ -95,8 +95,10 @@ class MD5():
     def fileHash(self, filepath):
         with open(filepath, 'rb') as f:
             ret = f.read()
+        ret = self.hash(ret)
         with open(filepath+'.md5', 'w') as f:
-            f.write(self.hash(ret))
+            f.write(ret)
+        return ret
 
 
 if __name__ == "__main__":
