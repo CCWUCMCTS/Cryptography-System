@@ -92,9 +92,14 @@ class MD5(CipherBase):
         B = self.i2LittleStr(B,4)
         C = self.i2LittleStr(C,4)
         D = self.i2LittleStr(D,4)
-        return A+B+C+D
-
+        return (A+B+C+D).upper()
+    def fileHash(self,filepath):
+        with open(filepath,'rb') as f:
+            ret=f.read()
+        with open(filepath+'.md5','w') as f:
+            f.write(self.hash(ret))
+            
 
 if __name__ == "__main__":
     a=MD5()
-    print(a.hash(b'asjkfskdfsdjnjfl243435knknknkjkdsdda22424244242ksdlsskkmfkdfkdmkgm242323493894587487asjkfskdfsdjnjfl243435knknknkjkdsdda22424244242ksdlsskkmfkdfkdmkgm242323493894587487asjkfskdfsdjnjfl243435knknknkjkdsdda22424244242ksdlsskkmfkdfkdmkgm242323493894587487asjkfskdfsdjnjfl243435knknknkjkdsdda22424244242ksdlsskkmfkdfkdmkgm242323493894587487'))
+    a.fileHash('message')
