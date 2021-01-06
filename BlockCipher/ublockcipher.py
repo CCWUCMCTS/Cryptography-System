@@ -64,11 +64,10 @@ class uBlockCipher(CipherBase):
         self.cdata = b''
         self.a.generateKey(key)
         for i in range(0,len(self.data),self.blocksize):
-            tmp = b''
+            tmp = self.a.aBlockDecode(self.data[i:i+self.blocksize])
             for j in range(self.blocksize):
-                tmp += self.i2b(IV[j]^self.data[i+j],1)
-            IV = self.a.aBlockEncode(tmp)
-            self.cdata += IV
+                self.cdata += self.i2b(IV[j]^tmp[j],1)
+            IV = self.data[i:i+self.blocksize]
     def CFB_E(self,key,IV,cfb_s=8):
         if cfb_s % 8 != 0 or cfb_s > self.blocksize * 8:
             raise('明文分组长度出错。')
@@ -79,7 +78,19 @@ class uBlockCipher(CipherBase):
             eIV = self.a.aBlockEncode(IV)
             for j in range(cfb_s//8):
                 tmp += self.i2b(eIV[j]^self.data[i+j],1)
-            IV = IV[cfb_s//8:] + tmp
+            IV = IV[cfb_s // 8:] + tmp
+            self.cdata += tmp
+    def CFB_D(self,key,IV,cfb_s=8):
+        if cfb_s % 8 != 0 or cfb_s > self.blocksize * 8:
+            raise('明文分组长度出错。')
+        self.cdata = b''
+        self.a.generateKey(key)
+        for i in range(0,len(self.data),cfb_s//8):
+            tmp = b''
+            eIV = self.a.aBlockEncode(IV)
+            for j in range(cfb_s//8):
+                tmp += self.i2b(eIV[j]^self.data[i+j],1)
+            IV = IV[cfb_s // 8:] + self.data[i:i + cfb_s // 8]
             self.cdata += tmp
     def encryptFile(self,filename,key,IV,mode='cbc',padding='pkcs7',coding='base64',cfb_s=8):
         self.readFile(filename)
@@ -129,4 +140,5 @@ if __name__ == '__main__':
     a = uBlockCipher()
     s = b'zzzzzzzz'
     # 可以拆成filepath，filename
-    a.encryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt',s,s,mode='cbc',padding='pkcs7',coding='base64',cfb_s=8)
+    a.encryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt',s,s,mode='cfb',padding='pkcs7',coding='base64')
+    a.decryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt.encrypt',s,s,mode='cfb',padding='pkcs7',coding='base64')
