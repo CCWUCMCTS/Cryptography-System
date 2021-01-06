@@ -68,6 +68,8 @@ class SM4(CipherBase):
         return X0^self.T(X1^X2^X3^rk)
 
     def generateKey(self,key128):
+        if len(key128) != 16:
+            raise('初始密钥长度错误。')
         key128 = self.b2i(key128)
         MK = self.cutNumber2List(key128,128,32)
         K = []
@@ -78,6 +80,8 @@ class SM4(CipherBase):
             self.rk.append(K[i+4])
 
     def aBlockEncode(self,message128):
+        if len(message128) != 16:
+            print('分组消息长度错误。')
         message128 = self.b2i(message128)
         X = self.cutNumber2List(message128,128,32)
         for i in range(32):
@@ -89,6 +93,8 @@ class SM4(CipherBase):
         return Y
 
     def aBlockDecode(self,message128):
+        if len(message128) != 16:
+            print('分组消息长度错误。')
         self.rk = self.rk[::-1]
         Y = self.aBlockEncode(message128)
         self.rk = self.rk[::-1]

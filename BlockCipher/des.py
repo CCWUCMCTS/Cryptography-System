@@ -157,6 +157,8 @@ class DES(CipherBase):
         '''
         return True
     def generateKey(self,key64):
+        if len(key64) != 8:
+            raise('初始密钥长度错误。')
         bits = self.byte2bit(key64)
         if self.checkKey(bits) == False:
             return False
@@ -168,6 +170,8 @@ class DES(CipherBase):
             D = self.aCycleLeftMove(D,28,self.SHIFT[i])
             self.key.append(self.doPC_2(self.i2b((C<<28)|D,56//8)))
     def aBlockEncode(self,message64):
+        if len(message64) != 8:
+            print('分组消息长度错误。')
         IPed = self.doIP(message64)
         #print(showbytesbin(IPed))
         L,R = self.cutLR(IPed)
@@ -178,6 +182,8 @@ class DES(CipherBase):
             #print('R:',showbytesbin(R))
         return self.doIP_1(R+L)
     def aBlockDecode(self,message64):
+        if len(message64) != 8:
+            print('分组消息长度错误。')
         self.key = self.key[::-1]
         Y = self.aBlockEncode(message64)
         self.key = self.key[::-1]

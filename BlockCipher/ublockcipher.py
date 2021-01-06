@@ -56,7 +56,9 @@ class uBlockCipher(CipherBase):
         self.a.generateKey(key)
         for i in range(0,len(self.data),self.blocksize):
             tmp = b''
+            #print(len(self.data))
             for j in range(self.blocksize):
+                #print(j,i+j)
                 tmp += self.i2b(IV[j]^self.data[i+j],1)
             IV = self.a.aBlockEncode(tmp)
             self.cdata += IV
@@ -137,8 +139,8 @@ class uBlockCipher(CipherBase):
         self.writeFile(filename,'.decrypt')
 
 if __name__ == '__main__':
-    a = uBlockCipher()
-    s = b'zzzzzzzz'
+    a = uBlockCipher('sm4')
+    s = b'zzzzzzzzzzzzzzzz'
     # 可以拆成filepath，filename
     a.encryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt',s,s,mode='cfb',padding='pkcs7',coding='base64')
     a.decryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt.encrypt',s,s,mode='cfb',padding='pkcs7',coding='base64')
