@@ -8,64 +8,106 @@ pri = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 7
        ]
 
 
-class CipherBase:
-    def getInfo(self):
-        print('This is a base class for cipher.')
+def a32CycleLeftMove(num, i):
+    """
+    函数描述:
+    32位循环左移。
 
-    def a32CycleLeftMove(self, num, i):
-        i = i % 32
-        return (((num >> (32-i)) | (num << i))) & 0xffffffff
+    参数:
+    @num: 需要循环左移的数字。
+    @i: 循环左移的位数。
 
-    def aCycleLeftMove(self, num, bas, i):
-        i = i % bas
-        return (((num >> (bas-i)) | (num << i))) & ((1 << bas)-1)
+    返回值:
+    32位循环左移结果。
+    """
+    i = i % 32
+    return (((num >> (32-i)) | (num << i))) & 0xffffffff
 
-    def cutNumber2List(self, num, total, piece):
-        if total % piece != 0:
-            raise Exception
-        ret = []
-        for _ in range(total//piece):
-            ret.append(num & ((1 << piece)-1))
-            num >>= piece
-        return ret[::-1]
 
-    def mergeList2Number(self, inputs, piece):
-        ret = 0
-        for input in inputs:
-            ret <<= piece
-            ret |= input
-        return ret
+def aCycleLeftMove(num, bas, i):
+    """
+    函数描述:
+    任意位循环左移。
 
-    def b2i(self, x):
-        return int.from_bytes(x, 'big')
+    参数:
+    @num: 需要循环左移的数字。
+    @bas: 循环的位数。
+    @i: 循环左移的位数。
 
-    def i2b(self, x, num=-1):
-        if num == -1:
-            num = (len(hex(x)[2:]) + 1) // 2
-        return int.to_bytes(x, num, 'big')
+    返回值:
+    任意位循环左移结果。
+    """
+    i = i % bas
+    return (((num >> (bas-i)) | (num << i))) & ((1 << bas)-1)
 
-    def byte2bit(self, bytek):
-        ret = []
-        for i in bytek:
-            # print(i)
-            t = 0x80
-            for j in range(8):
-                ret.append((i & t) >> (7-j))
-                t >>= 1
-        return ret
 
-    def bit2byte(self, bits):
-        ret = []
-        for i in range(0, len(bits), 8):
-            ret.append(self.bit2int(bits[i:i+8]))
-        return bytes(ret)
+def cutNumber2List(num, total, piece):
+    """
+    函数描述:
+    将一个数字按二进制位的固定长度分组，返回分组后的数字列表。
 
-    def bit2int(self, bits):
-        ret = 0
-        for bit in bits:
-            ret <<= 1
-            ret |= bit
-        return ret
+    参数:
+    @num: 待分组的数字。
+    @total: 数字的二进制位数。
+    @piece: 每组的大小。
+
+    返回值:
+    返回数字的二进制分组后的列表。
+
+    示例:
+    十进制421，即0b110100101，分组后返回[110,100,101]。
+    """
+    if total % piece != 0:
+        raise Exception
+    ret = []
+    for _ in range(total//piece):
+        ret.append(num & ((1 << piece)-1))
+        num >>= piece
+    return ret[::-1]
+
+
+def mergeList2Number(inputs, piece):
+    ret = 0
+    for input in inputs:
+        ret <<= piece
+        ret |= input
+    return ret
+
+
+def b2i(x):
+    return int.from_bytes(x, 'big')
+
+
+def i2b(x, num=-1):
+    if num == -1:
+        num = (len(hex(x)[2:]) + 1) // 2
+    return int.to_bytes(x, num, 'big')
+
+
+def byte2bit(bytek):
+    ret = []
+    for i in bytek:
+        # print(i)
+        t = 0x80
+        for j in range(8):
+            ret.append((i & t) >> (7-j))
+            t >>= 1
+    return ret
+
+
+def bit2byte(bits):
+    ret = []
+    for i in range(0, len(bits), 8):
+        ret.append(bit2int(bits[i:i+8]))
+    return bytes(ret)
+
+
+def bit2int(bits):
+    ret = 0
+    for bit in bits:
+        ret <<= 1
+        ret |= bit
+    return ret
 
 
 def nhex(n):
@@ -206,7 +248,15 @@ def exgcd(a,b):
         return x, y, q
         '''
 
+def addm(a1, a2, mod=2**32):
+    return (a1+a2) % mod
 
+def i2LittleStr(number, cnt):
+    lst = i2b(number, cnt)[::-1]
+    ret = ''
+    for i in lst:
+        ret += hex(i)[2:]
+    return ret
 def inv(a, b):
     x, _, z = exgcd(a, b)
     if z != 1:
@@ -257,8 +307,7 @@ def getPrime(n):
 
 if __name__ == "__main__":
 
-    a = CipherBase()
-    print(a.i2b(1952805748))
+    print(i2b(1952805748))
 
     '''
     n=137015429574709912343865346940708311403051748153560874512698266923411251835816551968909371668151193640666768540429452379295325512807976338932581679767173077626808613537103155097678925760433414882731897852307263143791846318576784422533758581983294090370237306211012735981811220009739002094171150798990116063481

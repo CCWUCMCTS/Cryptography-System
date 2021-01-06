@@ -1,9 +1,12 @@
-from RSA import RSA
-from cipherbase import CipherBase
+from CipherTools import *
+if __name__ == "__main__":
+    from RSA import RSA
+else:
+    from .RSA import RSA
 import os
 
 
-class usefulRSA(CipherBase):
+class usefulRSA():
     def __init__(self, nbits=512, outpath=None, keypath=None):
         self.a = RSA()
         if keypath != None:

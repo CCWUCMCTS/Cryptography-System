@@ -1,8 +1,7 @@
-from cipherbase import CipherBase
+
 import random
 
-
-class LSFR(CipherBase):
+class LSFR():
     def getInfo(self):
         '''
             打印LSFR的信息。

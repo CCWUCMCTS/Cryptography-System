@@ -1,7 +1,4 @@
-from cipherbase import CipherBase
-
-
-class CaesarCipher(CipherBase):
+class CaesarCipher():
     def getInfo(self):
         print('This is a caesar cipher.')
 

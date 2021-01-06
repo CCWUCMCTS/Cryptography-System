@@ -1,10 +1,9 @@
-from cipherbase import CipherBase
-from cipherbase import getPrime, speed, inv, gcd, derRSAPublicKey, derRSAPrivateKey
+from CipherTools import getPrime, speed, inv, gcd, derRSAPublicKey, derRSAPrivateKey,i2b,b2i
 from random import randint
 import os
 
 
-class RSA(CipherBase):
+class RSA():
     # 使用PKCS #1存储密钥
     def getInfo(self):
         print('这是一个RSA密码。')
@@ -22,14 +21,14 @@ class RSA(CipherBase):
         print('密钥生成成功！')
 
     def Encrypt(self, messageBytes):
-        if self.b2i(messageBytes) >= self.n:
+        if b2i(messageBytes) >= self.n:
             print('消息过长无法加密。')
-        return self.i2b(speed(self.b2i(messageBytes), self.e, self.n))
+        return i2b(speed(b2i(messageBytes), self.e, self.n))
 
     def Decrypt(self, messageBytes):
         if self.mode != 'private':
             raise('请载入一个私钥。')
-        return self.i2b(speed(self.b2i(messageBytes), self.d, self.n))
+        return i2b(speed(b2i(messageBytes), self.d, self.n))
 
     def testEncrypt(self, messageInt):
         if messageInt >= self.n:
@@ -97,7 +96,7 @@ if __name__ == "__main__":
     a.outputPrivateKey('C:\\Users\\wwwwww931121\\Desktop')
     a.inputKey('C:\\Users\\wwwwww931121\\Desktop\\private.txt')
 
-    print(a.b2i('hello'.encode('utf-8')))
+    print(b2i('hello'.encode('utf-8')))
     x = a.Encrypt('hello'.encode('utf-8'))
     print(x)
     y = a.Decrypt(x)

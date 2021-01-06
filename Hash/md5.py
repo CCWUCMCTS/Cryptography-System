@@ -1,8 +1,6 @@
-from cipherbase import CipherBase
+from CipherTools import i2b,b2i,addm,a32CycleLeftMove,i2LittleStr
 import math
-
-
-class MD5(CipherBase):
+class MD5():
 
     IV_A, IV_B, IV_C, IV_D = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
 
@@ -60,26 +58,26 @@ class MD5(CipherBase):
             message += fir + other * (120 - length % 64 - 1)
         length *= 8
         length %= 2**64
-        message += self.i2b(length, 8)[::-1]
+        message += i2b(length, 8)[::-1]
         return message
 
     def aBlockHash(self, a, b, c, d, m):
         A, B, C, D = a, b, c, d
-        groups = [self.b2i(m[i:i+4][::-1]) for i in range(0, len(m), 4)]
+        groups = [b2i(m[i:i+4][::-1]) for i in range(0, len(m), 4)]
         for i in range(4):
             for j in range(16):
                 AA, BB = A, B
                 fout = self.fun[i](B, C, D)
                 A, C, D = D, B, C
-                B = self.addm(AA, fout)
-                B = self.addm(B, groups[self.mindex[i][j]])
-                B = self.addm(B, self.T[i*16+j])
-                B = self.a32CycleLeftMove(B, self.lshift[i][j % 4])
-                B = self.addm(B, BB)
-        A = self.addm(A, a)
-        B = self.addm(B, b)
-        C = self.addm(C, c)
-        D = self.addm(D, d)
+                B = addm(AA, fout)
+                B = addm(B, groups[self.mindex[i][j]])
+                B = addm(B, self.T[i*16+j])
+                B = a32CycleLeftMove(B, self.lshift[i][j % 4])
+                B = addm(B, BB)
+        A = addm(A, a)
+        B = addm(B, b)
+        C = addm(C, c)
+        D = addm(D, d)
         return A, B, C, D
 
     def hash(self, message):
@@ -88,10 +86,10 @@ class MD5(CipherBase):
         A, B, C, D = self.IV_A, self.IV_B, self.IV_C, self.IV_D
         for block in blocks:
             A, B, C, D = self.aBlockHash(A, B, C, D, block)
-        A = self.i2LittleStr(A, 4)
-        B = self.i2LittleStr(B, 4)
-        C = self.i2LittleStr(C, 4)
-        D = self.i2LittleStr(D, 4)
+        A = i2LittleStr(A, 4)
+        B = i2LittleStr(B, 4)
+        C = i2LittleStr(C, 4)
+        D = i2LittleStr(D, 4)
         return (A+B+C+D).upper()
 
     def fileHash(self, filepath):

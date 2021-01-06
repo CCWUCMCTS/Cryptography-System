@@ -1,7 +1,5 @@
-from cipherbase import CipherBase, gcd, exgcd, inv
-
-
-class MultiplicativeCipher(CipherBase):
+from CipherTools import gcd,inv
+class MultiplicativeCipher():
     base = 26
 
     def getInfo(self):

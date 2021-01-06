@@ -4,10 +4,9 @@ Author: CCWUCMCTS
 E-mail: ccwang@cumt.edu.cn
 
 '''
-from cipherbase import CipherBase, showbytes
+from CipherTools import *
 
-
-class SM4(CipherBase):
+class SM4():
     '''
     GM/T 36825-2012
     GB/T 32907-2016
@@ -48,16 +47,16 @@ class SM4(CipherBase):
     rk = []
 
     def t(self, input32):
-        ret = self.cutNumber2List(input32, 32, 8)
+        ret = cutNumber2List(input32, 32, 8)
         for i in range(4):
             ret[i] = self.SboxTable[ret[i]]
-        return self.mergeList2Number(ret, 8)
+        return mergeList2Number(ret, 8)
 
     def L(self, input32):
-        return input32 ^ self.a32CycleLeftMove(input32, 2) ^ self.a32CycleLeftMove(input32, 10) ^ self.a32CycleLeftMove(input32, 18) ^ self.a32CycleLeftMove(input32, 24)
+        return input32 ^ a32CycleLeftMove(input32, 2) ^ a32CycleLeftMove(input32, 10) ^ a32CycleLeftMove(input32, 18) ^ a32CycleLeftMove(input32, 24)
 
     def L2(self, input32):
-        return input32 ^ self.a32CycleLeftMove(input32, 13) ^ self.a32CycleLeftMove(input32, 23)
+        return input32 ^ a32CycleLeftMove(input32, 13) ^ a32CycleLeftMove(input32, 23)
 
     def T(self, input32):
         return self.L(self.t(input32))
@@ -71,8 +70,8 @@ class SM4(CipherBase):
     def generateKey(self, key128):
         if len(key128) != 16:
             raise('初始密钥长度错误。')
-        key128 = self.b2i(key128)
-        MK = self.cutNumber2List(key128, 128, 32)
+        key128 = b2i(key128)
+        MK = cutNumber2List(key128, 128, 32)
         K = []
         for i in range(4):
             K.append(MK[i] ^ self.FK[i])
@@ -83,14 +82,14 @@ class SM4(CipherBase):
     def aBlockEncode(self, message128):
         if len(message128) != 16:
             print('分组消息长度错误。')
-        message128 = self.b2i(message128)
-        X = self.cutNumber2List(message128, 128, 32)
+        message128 = b2i(message128)
+        X = cutNumber2List(message128, 128, 32)
         for i in range(32):
             X.append(self.F(X[i], X[i+1], X[i+2], X[i+3], self.rk[i]))
         Y = X[32::]
         Y = Y[::-1]
-        Y = self.mergeList2Number(Y, 32)
-        Y = self.i2b(Y, 128//8)
+        Y = mergeList2Number(Y, 32)
+        Y = i2b(Y, 128//8)
         return Y
 
     def aBlockDecode(self, message128):

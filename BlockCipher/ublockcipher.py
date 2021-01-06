@@ -1,10 +1,13 @@
-from des import DES
-from sm4 import SM4
-from cipherbase import CipherBase
+from CipherTools import *
+if __name__ == "__main__":
+    from des import DES
+    from sm4 import SM4
+else:
+    from .des import DES
+    from .sm4 import SM4
 import base64
 
-
-class uBlockCipher(CipherBase):
+class uBlockCipher():
     def __init__(self, mode='des'):
         if mode.lower() == 'des':
             self.a = DES()
@@ -30,7 +33,7 @@ class uBlockCipher(CipherBase):
                 self.data += b'\x00'
         elif s.lower() == 'pkcs7':
             t = self.blocksize - len(self.data) % self.blocksize
-            pad = self.i2b(t, 1)
+            pad = i2b(t, 1)
             for _ in range(t):
                 self.data += pad
         else:
@@ -68,7 +71,7 @@ class uBlockCipher(CipherBase):
             # print(len(self.data))
             for j in range(self.blocksize):
                 # print(j,i+j)
-                tmp += self.i2b(IV[j] ^ self.data[i+j], 1)
+                tmp += i2b(IV[j] ^ self.data[i+j], 1)
             IV = self.a.aBlockEncode(tmp)
             self.cdata += IV
 
@@ -78,7 +81,7 @@ class uBlockCipher(CipherBase):
         for i in range(0, len(self.data), self.blocksize):
             tmp = self.a.aBlockDecode(self.data[i:i+self.blocksize])
             for j in range(self.blocksize):
-                self.cdata += self.i2b(IV[j] ^ tmp[j], 1)
+                self.cdata += i2b(IV[j] ^ tmp[j], 1)
             IV = self.data[i:i+self.blocksize]
 
     def CFB_E(self, key, IV, cfb_s=8):
@@ -90,7 +93,7 @@ class uBlockCipher(CipherBase):
             tmp = b''
             eIV = self.a.aBlockEncode(IV)
             for j in range(cfb_s//8):
-                tmp += self.i2b(eIV[j] ^ self.data[i+j], 1)
+                tmp += i2b(eIV[j] ^ self.data[i+j], 1)
             IV = IV[cfb_s // 8:] + tmp
             self.cdata += tmp
 
@@ -103,7 +106,7 @@ class uBlockCipher(CipherBase):
             tmp = b''
             eIV = self.a.aBlockEncode(IV)
             for j in range(cfb_s//8):
-                tmp += self.i2b(eIV[j] ^ self.data[i+j], 1)
+                tmp += i2b(eIV[j] ^ self.data[i+j], 1)
             IV = IV[cfb_s // 8:] + self.data[i:i + cfb_s // 8]
             self.cdata += tmp
 
@@ -137,7 +140,7 @@ class uBlockCipher(CipherBase):
         elif coding.lower() == 'hex':
             tmp = b''
             for i in range(0, len(self.data), 2):
-                tmp += self.i2b(int(self.data[i:i+2].decode('utf-8'), 16), 1)
+                tmp += i2b(int(self.data[i:i+2].decode('utf-8'), 16), 1)
             self.data = tmp
         else:
             raise('没有这种编码方案')

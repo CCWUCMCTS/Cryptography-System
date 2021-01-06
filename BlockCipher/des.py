@@ -1,7 +1,7 @@
-from cipherbase import CipherBase, showbytes, showbytesbin
 
+from CipherTools import *
 
-class DES(CipherBase):
+class DES():
     IP = [
         58, 50, 42, 34, 26, 18, 10, 2,
         60, 52, 44, 36, 28, 20, 12, 4,
@@ -104,40 +104,40 @@ class DES(CipherBase):
         return byte8[0:mid], byte8[mid:]
 
     def doIP(self, byte8):
-        bits = self.byte2bit(byte8)
+        bits = byte2bit(byte8)
         ret = [bits[self.IP[i]-1] for i in range(64)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def doIP_1(self, byte8):
-        bits = self.byte2bit(byte8)
+        bits = byte2bit(byte8)
         ret = [bits[self.IP_1[i]-1] for i in range(64)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def doPC_1(self, byte8):
-        bits = self.byte2bit(byte8)
+        bits = byte2bit(byte8)
         ret = [bits[self.PC_1[i]-1] for i in range(56)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def doPC_2(self, byte6):
-        bits = self.byte2bit(byte6)
+        bits = byte2bit(byte6)
         ret = [bits[self.PC_2[i]-1] for i in range(48)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def doE(self, byte4):
-        bits = self.byte2bit(byte4)
+        bits = byte2bit(byte4)
         ret = [bits[self.E[i]-1] for i in range(48)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def doS(self, byte6):
         ret = []
-        bits = self.byte2bit(byte6)
+        bits = byte2bit(byte6)
         ssum = 0
         for i in range(0, 48, 6):
             if i % 12 == 0:
                 ret.append(ssum)
                 ssum = 0
 
-            cur = self.bit2int(
+            cur = bit2int(
                 [bits[i], bits[i+5], bits[i+1], bits[i+2], bits[i+3], bits[i+4]])
             ssum <<= 4
             ssum |= self.S[i//6][cur]
@@ -147,9 +147,9 @@ class DES(CipherBase):
         return bytes(ret[1:])
 
     def doP(self, byte4):
-        bits = self.byte2bit(byte4)
+        bits = byte2bit(byte4)
         ret = [bits[self.P[i]-1] for i in range(32)]
-        return self.bit2byte(ret)
+        return bit2byte(ret)
 
     def F(self, R, key):
         newR = self.doE(R)
@@ -174,16 +174,16 @@ class DES(CipherBase):
     def generateKey(self, key64):
         if len(key64) != 8:
             raise('初始密钥长度错误。')
-        bits = self.byte2bit(key64)
+        bits = byte2bit(key64)
         if self.checkKey(bits) == False:
             return False
         CD = self.doPC_1(key64)
-        CD = self.b2i(CD)
+        CD = b2i(CD)
         C, D = CD >> 28, CD & 0xFFFFFFF
         for i in range(16):
-            C = self.aCycleLeftMove(C, 28, self.SHIFT[i])
-            D = self.aCycleLeftMove(D, 28, self.SHIFT[i])
-            self.key.append(self.doPC_2(self.i2b((C << 28) | D, 56//8)))
+            C = aCycleLeftMove(C, 28, self.SHIFT[i])
+            D = aCycleLeftMove(D, 28, self.SHIFT[i])
+            self.key.append(self.doPC_2(i2b((C << 28) | D, 56//8)))
 
     def aBlockEncode(self, message64):
         if len(message64) != 8:
@@ -209,10 +209,10 @@ class DES(CipherBase):
 
 if __name__ == '__main__':
     d = DES()
-    '''
+    
     m = b'\x87\x87\x87\x87\x87\x87\x87\x87'
     k = b'\x0E\x32\x92\x32\xEA\x6D\x0D\x73'
-    '''
+    
     '''
     m = b'\x01\x23\x45\x67\x89\xab\xcd\xef'
     k = b'\x13\x34\x57\x79\x9b\xbc\xdf\xf1'
@@ -225,18 +225,9 @@ if __name__ == '__main__':
     m = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
     k = m
     '''
-    m = b'zzzzzzzz'
-    k = m
-    c = b'6\xd5\x9b{p\x1f\x976'
+
     d.generateKey(k)
-    x = d.aBlockDecode(c)
-    for i in range(len(x)):
-        print(chr(x[i] ^ ord('z')))
-    '''
-    for i in k:
-        print('0'+str(bin(i))[2:],end='')
-    
     t=d.aBlockEncode(m)
     print(showbytes(t))
     print(showbytes(d.aBlockDecode(t)))
-    '''
+    

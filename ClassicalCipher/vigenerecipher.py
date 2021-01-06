@@ -1,7 +1,4 @@
-from cipherbase import CipherBase
-
-
-class VigenereCipher(CipherBase):
+class VigenereCipher():
     def getInfo(self):
         print('This is a vigenere cipher.')
 

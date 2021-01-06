@@ -1,7 +1,7 @@
-from cipherbase import CipherBase
+from CipherTools import i2b
 
 
-class RC4(CipherBase):
+class RC4():
     n = 8
     p = 256
 
@@ -16,8 +16,8 @@ class RC4(CipherBase):
         self.p = 2**n
 
     def init(self, key):
-        self.S = [self.i2b(i, 1) for i in range(self.p)]
-        self.T = [self.i2b(key[i % len(key)], 1) for i in range(self.p)]
+        self.S = [i2b(i, 1) for i in range(self.p)]
+        self.T = [i2b(key[i % len(key)], 1) for i in range(self.p)]
         j = 0
         for i in range(self.p):
             j = (j+self.S[i][0]+self.T[i][0]) % self.p
