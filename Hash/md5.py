@@ -103,4 +103,4 @@ class MD5():
 
 if __name__ == "__main__":
     a = MD5()
-    a.fileHash('message')
+    a.fileHash('./message')

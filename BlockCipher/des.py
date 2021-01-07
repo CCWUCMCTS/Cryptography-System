@@ -1,5 +1,5 @@
 
-from CipherTools import *
+from CipherTools import showbytes,byte2bit,bit2byte,aCycleLeftMove,bit2int,b2i,i2b
 
 class DES():
     IP = [

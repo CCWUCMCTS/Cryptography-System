@@ -4,7 +4,7 @@ Author: CCWUCMCTS
 E-mail: ccwang@cumt.edu.cn
 
 '''
-from CipherTools import *
+from CipherTools import cutNumber2List,mergeList2Number,a32CycleLeftMove,b2i,i2b,showbytes
 
 class SM4():
     '''
