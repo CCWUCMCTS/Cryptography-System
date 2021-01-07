@@ -1,4 +1,4 @@
-from CipherTools import *
+from CipherTools import i2b
 if __name__ == "__main__":
     from des import DES
     from sm4 import SM4

@@ -18,7 +18,7 @@ class RSA():
             self.e = randint(2, eulerN)
         self.d = inv(self.e, eulerN)
         self.mode = 'private'
-        print('密钥生成成功！')
+        #print('密钥生成成功！')
 
     def Encrypt(self, messageBytes):
         if b2i(messageBytes) >= self.n:
@@ -52,6 +52,7 @@ class RSA():
             f.write('d = '+str(self.d)+sep)
             f.write('p = '+str(self.p)+sep)
             f.write('q = '+str(self.q)+sep)
+        return txtpath
 
     def outputPublicKey(self, filepath, filename='public', sep='\n'):
         pempath = os.path.join(filepath, filename+'.pem')
@@ -62,6 +63,7 @@ class RSA():
         with open(txtpath, 'w') as f:
             f.write('n = '+str(self.n)+sep)
             f.write('e = '+str(self.e)+sep)
+        return txtpath
 
     def inputKey(self, keypath):
         self.n = self.e = self.d = self.p = self.q = 1

@@ -15,6 +15,7 @@ class RSASignature():
         s = base64.b64encode(s)
         with open(path+'.sign','wb') as f:
             f.write(s)
+        return path+'.sign'
     def check(self,signpath,filepath,data0=None):
         with open(signpath,'rb') as f:
             data = f.read()
