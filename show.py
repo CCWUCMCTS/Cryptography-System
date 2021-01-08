@@ -36,7 +36,7 @@ def createFile():
 def generateKey():
     global AlicePrivateKey, AlicePublicKey, BobPrivateKey, BobPublicKey, sm4key, IV
     a = RSA()
-    a.generateKey()
+    a.generateKey(nbits=512)
     AlicePrivateKey = a.outputPrivateKey(pathA)
     AlicePublicKey = a.outputPublicKey(pathB)
     print('Alice私钥生成成功，公钥已传输给Bob。')
