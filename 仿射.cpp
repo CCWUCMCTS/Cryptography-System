@@ -171,8 +171,6 @@ int main(){
 					C.showKey();
 					cout<<C.showP()<<endl<<endl;;
 				}
-				
-				
 			}
 		}
 	}
