@@ -1,13 +1,20 @@
-from CipherTools import getPrime, speed, inv, gcd, derRSAPublicKey, derRSAPrivateKey,i2b,b2i
+'''
+文件名: RSA.py
+介绍: 
+时间: 2021/01/12 23:00:02
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
+
+from CipherTools import getPrime, speed, inv, gcd, derRSAPublicKey, derRSAPrivateKey, i2b, b2i
 from random import randint
 import os
 
 
 class RSA():
-    # 使用PKCS #1存储密钥
-    def getInfo(self):
-        print('这是一个RSA密码。')
 
+    # 密钥生成
     def generateKey(self, nbits=512):
         self.p = getPrime(nbits)
         self.q = getPrime(nbits)
@@ -18,28 +25,33 @@ class RSA():
             self.e = randint(2, eulerN)
         self.d = inv(self.e, eulerN)
         self.mode = 'private'
-        #print('密钥生成成功！')
+        # print('密钥生成成功！')
 
+    # 字节加密
     def Encrypt(self, messageBytes):
         if b2i(messageBytes) >= self.n:
             print('消息过长无法加密。')
         return i2b(speed(b2i(messageBytes), self.e, self.n))
 
+    # 字节解密
     def Decrypt(self, messageBytes):
         if self.mode != 'private':
             raise('请载入一个私钥。')
         return i2b(speed(b2i(messageBytes), self.d, self.n))
 
+    # 整数加密
     def testEncrypt(self, messageInt):
         if messageInt >= self.n:
             print('消息过长无法加密。')
         return speed(messageInt, self.e, self.n)
 
+    # 整数解密
     def testDecrypt(self, messageInt):
         if self.mode != 'private':
             raise('请载入一个私钥。')
         return speed(messageInt, self.d, self.n)
 
+    # 输出私钥
     def outputPrivateKey(self, filepath, filename='private', sep='\n'):
         pempath = os.path.join(filepath, filename+'.pem')
         with open(pempath, 'w') as f:
@@ -54,6 +66,7 @@ class RSA():
             f.write('q = '+str(self.q)+sep)
         return txtpath
 
+    # 输出公钥
     def outputPublicKey(self, filepath, filename='public', sep='\n'):
         pempath = os.path.join(filepath, filename+'.pem')
         with open(pempath, 'w') as f:
@@ -65,6 +78,7 @@ class RSA():
             f.write('e = '+str(self.e)+sep)
         return txtpath
 
+    # 输入密钥
     def inputKey(self, keypath):
         self.n = self.e = self.d = self.p = self.q = 1
         with open(keypath, 'r') as f:
@@ -90,16 +104,19 @@ class RSA():
         self.mode = 'private'
         print('私钥加载成功，当前运行模式为：加密解密。')
 
+    # 展示
+    def show(self):
+        self.generateKey(512)
+        self.outputPublicKey('PublickeyCipher')
+        self.outputPrivateKey('PublickeyCipher')
+        self.inputKey('PublickeyCipher\\private.txt')
+        print(b2i('hello'.encode('utf-8')))
+        x = self.Encrypt('hello'.encode('utf-8'))
+        print(x)
+        y = self.Decrypt(x)
+        print(y)
+
 
 if __name__ == "__main__":
     a = RSA()
-    a.generateKey(512)
-    a.outputPublicKey('C:\\Users\\wwwwww931121\\Desktop')
-    a.outputPrivateKey('C:\\Users\\wwwwww931121\\Desktop')
-    a.inputKey('C:\\Users\\wwwwww931121\\Desktop\\private.txt')
-
-    print(b2i('hello'.encode('utf-8')))
-    x = a.Encrypt('hello'.encode('utf-8'))
-    print(x)
-    y = a.Decrypt(x)
-    print(y)
+    a.show()
