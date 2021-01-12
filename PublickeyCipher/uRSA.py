@@ -22,7 +22,7 @@ class usefulRSA():
         self.a = RSA()
         if keypath != None:
             self.a.inputKey(keypath)
-            self.mode=self.a.mode
+            self.mode = self.a.mode
             return
         if outpath == None:
             outpath = 'PublickeyCipher\\'
@@ -33,10 +33,10 @@ class usefulRSA():
     # 手动设置密钥
     def setKey(self, outpath):
         self.a.inputKey(outpath)
-        self.mode=self.a.mode
+        self.mode = self.a.mode
 
     # 文件加密
-    def fileEncrypt(self, filepath,suffix='.encrypt'):
+    def fileEncrypt(self, filepath, suffix='.encrypt'):
         f1 = open(filepath, 'rb')
         c = self.a.Encrypt(f1.read())
         f1.close()
@@ -45,7 +45,7 @@ class usefulRSA():
         f2.close()
 
     # 文件解密
-    def fileDecrypt(self, filepath,suffix='.decrypt'):
+    def fileDecrypt(self, filepath, suffix='.decrypt'):
         f1 = open(filepath, 'rb')
         m = self.a.Decrypt(f1.read())
         f1.close()
@@ -66,6 +66,7 @@ class usefulRSA():
         file = 'PublickeyCipher\\message'
         self.fileEncrypt(file)
         self.fileDecrypt(file+'.encrypt')
+
 
 if __name__ == "__main__":
     a = usefulRSA()
