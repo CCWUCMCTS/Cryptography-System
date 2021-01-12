@@ -1,5 +1,14 @@
+'''
+文件名: des.py
+介绍: 
+时间: 2021/01/12 19:36:55
+作者: CCWUCMCTS
+版本: 1.0
+'''
 
-from CipherTools import showbytes,byte2bit,bit2byte,aCycleLeftMove,bit2int,b2i,i2b
+
+from CipherTools import showbytes, byte2bit, bit2byte, aCycleLeftMove, bit2int, b2i, i2b
+
 
 class DES():
     IP = [
@@ -99,35 +108,42 @@ class DES():
     SHIFT = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
     key = []
 
+    # 数据左右拆分
     def cutLR(self, byte8):
         mid = len(byte8)//2
         return byte8[0:mid], byte8[mid:]
 
+    # IP置换
     def doIP(self, byte8):
         bits = byte2bit(byte8)
         ret = [bits[self.IP[i]-1] for i in range(64)]
         return bit2byte(ret)
 
+    # IP逆置换
     def doIP_1(self, byte8):
         bits = byte2bit(byte8)
         ret = [bits[self.IP_1[i]-1] for i in range(64)]
         return bit2byte(ret)
 
+    # 密钥生成置换1
     def doPC_1(self, byte8):
         bits = byte2bit(byte8)
         ret = [bits[self.PC_1[i]-1] for i in range(56)]
         return bit2byte(ret)
 
+    # 密钥生成置换2
     def doPC_2(self, byte6):
         bits = byte2bit(byte6)
         ret = [bits[self.PC_2[i]-1] for i in range(48)]
         return bit2byte(ret)
 
+    # E扩展置换
     def doE(self, byte4):
         bits = byte2bit(byte4)
         ret = [bits[self.E[i]-1] for i in range(48)]
         return bit2byte(ret)
 
+    # S盒变换
     def doS(self, byte6):
         ret = []
         bits = byte2bit(byte6)
@@ -146,11 +162,13 @@ class DES():
         # print(ret)
         return bytes(ret[1:])
 
+    # P盒置换
     def doP(self, byte4):
         bits = byte2bit(byte4)
         ret = [bits[self.P[i]-1] for i in range(32)]
         return bit2byte(ret)
 
+    # F函数
     def F(self, R, key):
         newR = self.doE(R)
         newR = bytes([i ^ j for i, j in zip(newR, key)])
@@ -159,18 +177,21 @@ class DES():
         newR = self.doP(newR)
         return newR
 
+    # 轮处理过程
     def fun(self, L, R, key):
         newL = R
         newR = self.F(R, key)
         newR = bytes([i ^ j for i, j in zip(newR, L)])
         return newL, newR
 
+    # 奇偶校验
     def checkKey(self, bits):
         '''
         wait to updata
         '''
         return True
 
+    # 密钥生成
     def generateKey(self, key64):
         if len(key64) != 8:
             raise('初始密钥长度错误。')
@@ -185,6 +206,7 @@ class DES():
             D = aCycleLeftMove(D, 28, self.SHIFT[i])
             self.key.append(self.doPC_2(i2b((C << 28) | D, 56//8)))
 
+    # 单组加密
     def aBlockEncode(self, message64):
         if len(message64) != 8:
             print('分组消息长度错误。')
@@ -198,6 +220,7 @@ class DES():
             # print('R:',showbytesbin(R))
         return self.doIP_1(R+L)
 
+    # 单组解密
     def aBlockDecode(self, message64):
         if len(message64) != 8:
             print('分组消息长度错误。')
@@ -206,28 +229,38 @@ class DES():
         self.key = self.key[::-1]
         return Y
 
+    # 单组展示
+    def show(self):
+        m = b'\x87\x87\x87\x87\x87\x87\x87\x87'
+        k = b'\x0E\x32\x92\x32\xEA\x6D\x0D\x73'
+        print('m =', showbytes(m), '\nk =', showbytes(k))
+        self.generateKey(k)
+        t = self.aBlockEncode(m)
+        print(showbytes(t))
+        print(showbytes(self.aBlockDecode(t)))
+        m = b'\x01\x23\x45\x67\x89\xab\xcd\xef'
+        k = b'\x13\x34\x57\x79\x9b\xbc\xdf\xf1'
+        print('m =', showbytes(m), '\nk =', showbytes(k))
+        self.generateKey(k)
+        t = self.aBlockEncode(m)
+        print(showbytes(t))
+        print(showbytes(self.aBlockDecode(t)))
+        m = b'\x00\x00\x00\x00\x00\x00\x00\x00'
+        k = m
+        print('m =', showbytes(m), '\nk =', showbytes(k))
+        self.generateKey(k)
+        t = self.aBlockEncode(m)
+        print(showbytes(t))
+        print(showbytes(self.aBlockDecode(t)))
+        m = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
+        k = m
+        print('m =', showbytes(m), '\nk =', showbytes(k))
+        self.generateKey(k)
+        t = self.aBlockEncode(m)
+        print(showbytes(t))
+        print(showbytes(self.aBlockDecode(t)))
+
 
 if __name__ == '__main__':
     d = DES()
-    
-    m = b'\x87\x87\x87\x87\x87\x87\x87\x87'
-    k = b'\x0E\x32\x92\x32\xEA\x6D\x0D\x73'
-    
-    '''
-    m = b'\x01\x23\x45\x67\x89\xab\xcd\xef'
-    k = b'\x13\x34\x57\x79\x9b\xbc\xdf\xf1'
-    '''
-    '''
-    m = b'\x00\x00\x00\x00\x00\x00\x00\x00'
-    k = m
-    '''
-    '''
-    m = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
-    k = m
-    '''
-
-    d.generateKey(k)
-    t=d.aBlockEncode(m)
-    print(showbytes(t))
-    print(showbytes(d.aBlockDecode(t)))
-    
+    d.show()

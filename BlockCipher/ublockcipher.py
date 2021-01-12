@@ -1,3 +1,12 @@
+'''
+文件名: ublockcipher.py
+介绍: 
+时间: 2021/01/12 22:15:55
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
+
 from CipherTools import i2b
 if __name__ == "__main__":
     from des import DES
@@ -7,7 +16,10 @@ else:
     from .sm4 import SM4
 import base64
 
+
 class uBlockCipher():
+
+    # 初始化选择密码算法
     def __init__(self, mode='des'):
         if mode.lower() == 'des':
             self.a = DES()
@@ -16,16 +28,19 @@ class uBlockCipher():
             self.a = SM4()
             self.blocksize = 16
 
+    # 读取文件
     def readFile(self, filename):
         f = open(filename, 'rb')
         self.data = f.read()
         f.close()
 
+    # 写加密后文件
     def writeFile(self, filename, ed):
         f = open(filename+ed, 'wb')
         f.write(self.cdata)
         f.close()
 
+    # 填充，支持零填充、pkcs7
     def aPadding(self, s):
         if s.lower() == 'zero':
             t = self.blocksize - len(self.data) % self.blocksize
@@ -39,6 +54,7 @@ class uBlockCipher():
         else:
             raise('没有这种填充方式。')
 
+    # 反填充
     def rePadding(self, s):
         if s.lower() == 'zero':
             las = len(self.cdata) - 1
@@ -51,18 +67,21 @@ class uBlockCipher():
         else:
             raise('没有这种填充方式。')
 
+    # ECB模式加密
     def ECB_E(self, key):
         self.cdata = b''
         self.a.generateKey(key)
         for i in range(0, len(self.data), self.blocksize):
             self.cdata += self.a.aBlockEncode(self.data[i:i+self.blocksize])
 
+    # ECB模式解密
     def ECB_D(self, key):
         self.cdata = b''
         self.a.generateKey(key)
         for i in range(0, len(self.data), self.blocksize):
             self.cdata += self.a.aBlockDecode(self.data[i:i+self.blocksize])
 
+    # CBC模式加密
     def CBC_E(self, key, IV):
         self.cdata = b''
         self.a.generateKey(key)
@@ -75,6 +94,7 @@ class uBlockCipher():
             IV = self.a.aBlockEncode(tmp)
             self.cdata += IV
 
+    # CBC模式解密
     def CBC_D(self, key, IV):
         self.cdata = b''
         self.a.generateKey(key)
@@ -84,6 +104,7 @@ class uBlockCipher():
                 self.cdata += i2b(IV[j] ^ tmp[j], 1)
             IV = self.data[i:i+self.blocksize]
 
+    # CFB模式加密
     def CFB_E(self, key, IV, cfb_s=8):
         if cfb_s % 8 != 0 or cfb_s > self.blocksize * 8:
             raise('明文分组长度出错。')
@@ -97,6 +118,7 @@ class uBlockCipher():
             IV = IV[cfb_s // 8:] + tmp
             self.cdata += tmp
 
+    # CFB模式解密
     def CFB_D(self, key, IV, cfb_s=8):
         if cfb_s % 8 != 0 or cfb_s > self.blocksize * 8:
             raise('明文分组长度出错。')
@@ -110,6 +132,7 @@ class uBlockCipher():
             IV = IV[cfb_s // 8:] + self.data[i:i + cfb_s // 8]
             self.cdata += tmp
 
+    # 文件加密
     def encryptFile(self, filename, key, IV, mode='cbc', padding='pkcs7', coding='base64', cfb_s=8):
         self.readFile(filename)
         self.aPadding(padding)
@@ -133,6 +156,7 @@ class uBlockCipher():
             raise('没有这种编码方案')
         self.writeFile(filename, '.encrypt')
 
+    # 文件解密
     def decryptFile(self, filename, key, IV, mode='cbc', padding='pkcs7', coding='base64', cfb_s=8):
         self.readFile(filename)
         if coding.lower() == 'base64':
@@ -156,12 +180,15 @@ class uBlockCipher():
         self.rePadding(padding)
         self.writeFile(filename, '.decrypt')
 
+    # 测试模式
+    def show(self):
+        s = b'zzzzzzzz'
+        self.encryptFile('BlockCipher\\123.txt', s, s, mode='cfb',
+                         padding='pkcs7', coding='base64')
+        self.decryptFile('BlockCipher\\123.txt.encrypt', s, s, mode='cfb',
+                         padding='pkcs7', coding='base64')
+
 
 if __name__ == '__main__':
-    a = uBlockCipher('sm4')
-    s = b'zzzzzzzzzzzzzzzz'
-    # 可以拆成filepath，filename
-    a.encryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt', s,
-                  s, mode='cfb', padding='pkcs7', coding='base64')
-    a.decryptFile('C:\\Users\\wwwwww931121\\Desktop\\123.txt.encrypt',
-                  s, s, mode='cfb', padding='pkcs7', coding='base64')
+    a = uBlockCipher('des')
+    a.show()

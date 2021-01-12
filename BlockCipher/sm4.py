@@ -1,10 +1,14 @@
 '''
-Version: 1.0
-Author: CCWUCMCTS
-E-mail: ccwang@cumt.edu.cn
-
+文件名: sm4.py
+介绍: 
+时间: 2021/01/12 21:38:50
+作者: CCWUCMCTS
+版本: 1.0
 '''
-from CipherTools import cutNumber2List,mergeList2Number,a32CycleLeftMove,b2i,i2b,showbytes
+
+
+from CipherTools import cutNumber2List, mergeList2Number, a32CycleLeftMove, b2i, i2b, showbytes
+
 
 class SM4():
     '''
@@ -46,27 +50,34 @@ class SM4():
     # But the CK[0] of the author is wrong.
     rk = []
 
+    # 非线性变换τ
     def t(self, input32):
         ret = cutNumber2List(input32, 32, 8)
         for i in range(4):
             ret[i] = self.SboxTable[ret[i]]
         return mergeList2Number(ret, 8)
 
+    # 线性变换L
     def L(self, input32):
         return input32 ^ a32CycleLeftMove(input32, 2) ^ a32CycleLeftMove(input32, 10) ^ a32CycleLeftMove(input32, 18) ^ a32CycleLeftMove(input32, 24)
 
+    # 密钥生成线性变换L
     def L2(self, input32):
         return input32 ^ a32CycleLeftMove(input32, 13) ^ a32CycleLeftMove(input32, 23)
 
+    # 合成置换T
     def T(self, input32):
         return self.L(self.t(input32))
 
+    # 密钥生成合成置换T
     def T2(self, input32):
         return self.L2(self.t(input32))
 
+    # 轮函数F
     def F(self, X0, X1, X2, X3, rk):
         return X0 ^ self.T(X1 ^ X2 ^ X3 ^ rk)
 
+    # 密钥生成
     def generateKey(self, key128):
         if len(key128) != 16:
             raise('初始密钥长度错误。')
@@ -79,6 +90,7 @@ class SM4():
             K.append(K[i] ^ self.T2(K[i+1] ^ K[i+2] ^ K[i+3] ^ self.CK[i]))
             self.rk.append(K[i+4])
 
+    # 单组加密
     def aBlockEncode(self, message128):
         if len(message128) != 16:
             print('分组消息长度错误。')
@@ -92,6 +104,7 @@ class SM4():
         Y = i2b(Y, 128//8)
         return Y
 
+    # 单组解密
     def aBlockDecode(self, message128):
         if len(message128) != 16:
             print('分组消息长度错误。')
@@ -100,25 +113,28 @@ class SM4():
         self.rk = self.rk[::-1]
         return Y
 
+    # 标准中的示例1
+    def show1(self):
+        s = b'\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10'
+        self.generateKey(s)
+        c = self.aBlockEncode(s)
+        print(showbytes(c))
+        p = self.aBlockDecode(c)
+        print(showbytes(p))
+
+    # 标准中的示例2
+    def show2(self):
+        s = b'\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10'
+        self.generateKey(s)
+        c = s
+        for i in range(1000000):
+            if i % 250000 == 0:
+                print(i)
+            c = self.aBlockEncode(c)
+        print(showbytes(c))
+
 
 if __name__ == '__main__':
     sm4 = SM4()
-    s = b'\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10'
-    sm4.generateKey(s)
-
-    # sample 1 encode_decode:
-    c = sm4.aBlockEncode(s)
-    print(showbytes(c))
-    p = sm4.aBlockDecode(c)
-    print(showbytes(p))
-
-    # sample 2
-    '''
-    c = s
-    for i in range(1000000):
-        if i%10000 == 0:
-            print(i)
-        c = sm4.aBlockEncode(c)
-    
-    print(hex(c))
-    '''
+    sm4.show1()
+    sm4.show2()
