@@ -1,27 +1,30 @@
+'''
+文件名: lfsr.py
+介绍: 
+时间: 2021/01/12 18:41:47
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
 
 import random
 
-class LSFR():
-    def getInfo(self):
-        '''
-            打印LSFR的信息。
-        '''
-        print('这是一个线性反馈移位寄存器。')
 
+class LFSR():
+
+    # 打印对象当前的多项式
     def showPolynomial(self):
-        '''
-            打印对象当前的多项式。
-        '''
         print('当前的多项式为：1', end='')
         for i in self.pol:
             print('+x^'+str(i), end='')
         print('')
 
+    # 设置对象的多项式
     def setPolynomial(self, s, n=None):
         '''
             设置对象的多项式。
             s: 表示系数为1的项的次数列表，有没有0均不影响。
-            n: 表示LSFR的级数，当最高次项次数为n时不需要。
+            n: 表示LFSR的级数，当最高次项次数为n时不需要。
             self.pol: 存储了系数为1的项的次数列表，不包含0次。
         '''
         self.pol = sorted(s)
@@ -33,11 +36,12 @@ class LSFR():
             self.pol = self.pol[1:]
         self.showPolynomial()
 
+    # 提示输入一个多项式
     def inputPolynomial(self, n=None):
         '''
             提示输入一个多项式，并加载到对象中。
             需要在一行中输入多项式系数为1的项的次数，以空格隔开。
-            n: 表示LSFR的级数，当最高次项次数为n时不需要。
+            n: 表示LFSR的级数，当最高次项次数为n时不需要。
         '''
         while True:
             print('请输入多项式系数为1的项的次数，用空格隔开：')
@@ -50,9 +54,10 @@ class LSFR():
             self.setPolynomial(inputs, n)
             break
 
+    # 随机初始化寄存器
     def randomInitSeq(self):
         '''
-            随机LSFR中n个寄存器的初始值。
+            随机LFSR中n个寄存器的初始值。
             self.initseq: n个寄存器的初始值。
         '''
         try:
@@ -61,9 +66,10 @@ class LSFR():
             print('请先设置多项式。')
         self.initseq = [random.randint(0, 1) for _ in range(self.n)]
 
+    # 设定寄存器初始值
     def setInitSeq(self, f):
         '''
-            设定LSFR中n个寄存器的初始值。
+            设定LFSR中n个寄存器的初始值。
             self.initseq: n个寄存器的初始值。
         '''
         try:
@@ -72,6 +78,7 @@ class LSFR():
             print('请先设置多项式。')
         self.initseq = f
 
+    # 生成指定长度的多项式
     def generateSeq(self, end=-1):
         '''
             生成序列至指定的长度，若当前多项式为本源多项式，则生成的是m序列。
@@ -100,6 +107,7 @@ class LSFR():
             self.seq.append(t)
         return len(self.seq)
 
+    # 游程统计
     def countSeqm(self):
         '''
             对当前已经生成的序列中，长度为1-n的0、1游程进行统计，输出游程统计字典。
@@ -128,11 +136,9 @@ class LSFR():
             self.mdict[i+1] = (num[0].count(i+1), num[1].count(i+1))
         # print(self.mdict)
 
+    # 效果展示
     def show(self):
-        '''
-            效果展示函数。
-        '''
-        a = LSFR()
+        a = LFSR()
         a.inputPolynomial()
         a.randomInitSeq()
         # a.setInitSeq([1,0,0,1,1])
@@ -144,5 +150,5 @@ class LSFR():
 
 
 if __name__ == "__main__":
-    b = LSFR()
+    b = LFSR()
     b.show()
