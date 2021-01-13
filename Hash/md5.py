@@ -1,5 +1,16 @@
-from CipherTools import i2b,b2i,addm,a32CycleLeftMove,i2LittleStr
+'''
+文件名: md5.py
+介绍: 
+时间: 2021/01/13 12:50:29
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
+
+from CipherTools import i2b, b2i, addm, a32CycleLeftMove, i2LittleStr
 import math
+
+
 class MD5():
 
     IV_A, IV_B, IV_C, IV_D = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
@@ -11,41 +22,43 @@ class MD5():
         [6, 10, 15, 21]
     ]
 
-    mindex = []
-
-    T = []
-
-    def getInfo(self):
-        print("这是一个MD5哈希算法。")
-
+    # T数组生成
     def generateSinTable(self, i):
         return math.floor(abs(math.sin(i)) * 2 ** 32)
 
+    # 位移坐标生成
     def __init__(self):
+        self.mindex = []
+        self.T = []
         self.mindex.append([i for i in range(16)])
         self.mindex.append([(1+5*i) % 16 for i in range(16)])
         self.mindex.append([(5+3*i) % 16 for i in range(16)])
         self.mindex.append([7*i % 16 for i in range(16)])
         self.T.extend([self.generateSinTable(i+1) for i in range(64)])
 
+    # 非线性函数F
     @staticmethod
     def F(X, Y, Z):
         return (X & Y) | (~X & Z)
 
+    # 非线性函数G
     @staticmethod
     def G(X, Y, Z):
         return (X & Z) | (Y & ~Z)
 
+    # 非线性函数H
     @staticmethod
     def H(X, Y, Z):
         return X ^ Y ^ Z
 
+    # 非线性函数I
     @staticmethod
     def I(X, Y, Z):
         return Y ^ (X | ~Z)
 
     fun = [F.__func__, G.__func__, H.__func__, I.__func__]
 
+    # 消息填充
     def getPadding(self, message):
         fir = b'\x80'
         other = b'\x00'
@@ -61,6 +74,7 @@ class MD5():
         message += i2b(length, 8)[::-1]
         return message
 
+    # 步操作
     def aBlockHash(self, a, b, c, d, m):
         A, B, C, D = a, b, c, d
         groups = [b2i(m[i:i+4][::-1]) for i in range(0, len(m), 4)]
@@ -80,6 +94,7 @@ class MD5():
         D = addm(D, d)
         return A, B, C, D
 
+    # MD5主过程
     def hash(self, message):
         message = self.getPadding(message)
         blocks = [message[i:i+64] for i in range(0, len(message), 64)]
@@ -92,6 +107,7 @@ class MD5():
         D = i2LittleStr(D, 4)
         return (A+B+C+D).upper()
 
+    # 文件hash
     def fileHash(self, filepath):
         with open(filepath, 'rb') as f:
             ret = f.read()
@@ -103,4 +119,4 @@ class MD5():
 
 if __name__ == "__main__":
     a = MD5()
-    a.fileHash('./message')
+    print(a.fileHash('Hash\\message'))

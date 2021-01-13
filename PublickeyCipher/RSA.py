@@ -20,6 +20,7 @@ class RSA():
         self.q = getPrime(nbits)
         self.n = self.p * self.q
         eulerN = (self.p - 1) * (self.q - 1)
+        # 此处可改小e做优化
         self.e = randint(2, eulerN-1)
         while gcd(self.e, eulerN) != 1:
             self.e = randint(2, eulerN)
