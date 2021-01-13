@@ -108,12 +108,13 @@ class MD5():
         return (A+B+C+D).upper()
 
     # 文件hash
-    def fileHash(self, filepath):
+    def fileHash(self, filepath,output=True):
         with open(filepath, 'rb') as f:
             ret = f.read()
         ret = self.hash(ret)
-        with open(filepath+'.md5', 'w') as f:
-            f.write(ret)
+        if output == True:
+            with open(filepath+'.md5', 'w') as f:
+                f.write(ret)
         return ret
 
 

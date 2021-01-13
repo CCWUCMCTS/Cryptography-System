@@ -10,23 +10,30 @@ from PublickeyCipher.uRSA import usefulRSA
 from PublickeyCipher.RSA import RSA
 from Hash.md5 import MD5
 from CipherTools import i2b
-pathA = './test/Alice'  # 发送目录
-pathB = './test/Bob'  # 接收目录
-filename = 'impotant'  # 发送文件名
+
+pathA = 'test/Alice'  # 发送目录
+pathB = 'test/Bob'  # 接收目录
+filename = 'important'  # 发送文件名
 sfile = os.path.join(pathA, filename)  # 发送文件路径
 rfile = os.path.join(pathB, filename)  # 接收文件路径
 szipfile1 = os.path.join(pathA, 'zip1.zip')  # 发送内层zip路径
 szipfile2 = os.path.join(pathA, 'zip2.zip')  # 发送外层zip路径
 rzipfile1 = os.path.join(pathB, 'zip1.zip')  # 接收内层zip路径
 rzipfile2 = os.path.join(pathB, 'zip2.zip')  # 接收外层zip路径
-skeyfile = os.path.join(pathA,'sm4.key')
-rkeyfile = os.path.join(pathB,'sm4.key')
+skeyfile = os.path.join(pathA, 'sm4.key')
+rkeyfile = os.path.join(pathB, 'sm4.key')
 rang = 4294967296**4-1
 
 
+def fileSize(sz):
+    # 文件大小，单位KB
+    return 1024//16*sz
+
+
 def createFile():
+    # 文件创建
     output = b''
-    for i in range(1024*1024//16//16):
+    for i in range(fileSize(64)):
         output += i2b(randint(0, rang), 16)
     with open(sfile, 'wb') as f:
         f.write(output)
@@ -34,6 +41,7 @@ def createFile():
 
 
 def generateKey():
+    # 密钥生成
     global AlicePrivateKey, AlicePublicKey, BobPrivateKey, BobPublicKey, sm4key, IV
     a = RSA()
     a.generateKey(nbits=512)
@@ -52,6 +60,7 @@ def generateKey():
 
 
 def Alice():
+    # Alice过程
     print('Alice正在准备：')
     a = RSASignature(AlicePrivateKey)
     signpath = a.sign(sfile, 'CCWUCMCTS')
@@ -68,7 +77,7 @@ def Alice():
     b = usefulRSA(keypath=BobPublicKey)
     _key = base64.b64encode(b.byteEncrypt(sm4key))
     _IV = base64.b64encode(b.byteEncrypt(IV))
-    with open(skeyfile,'wb') as f:
+    with open(skeyfile, 'wb') as f:
         f.write(_key + b'\x00' + _IV)
     print('密钥加密完成。')
     z = zipfile.ZipFile(szipfile2, 'w')
@@ -76,29 +85,32 @@ def Alice():
     z.write(skeyfile, os.path.basename(skeyfile))
     z.close()
     print('所有文件打包完成。')
-    copyfile(szipfile2,rzipfile2)
+    copyfile(szipfile2, rzipfile2)
     print('文件传输完成。')
-    
+
+
 def Bob():
+    # Bob过程
     print('Bob已收到文件。')
-    z=zipfile.ZipFile(rzipfile2,'r')
+    z = zipfile.ZipFile(rzipfile2, 'r')
     z.extractall(pathB)
     z.close()
     print('文件解压成功，得到密钥与文件。')
-    with open(rkeyfile,'rb') as f:
-        _key,_IV = f.read().split(b'\x00')
+    with open(rkeyfile, 'rb') as f:
+        _key, _IV = f.read().split(b'\x00')
     a = usefulRSA(keypath=BobPrivateKey)
     key = a.byteDecrypt(base64.b64decode(_key))
     IV = a.byteDecrypt(base64.b64decode(_IV))
     b = uBlockCipher('sm4')
-    b.decryptFile(rzipfile1+'.encrypt',key,IV,mode='cbc',padding='pkcs7',coding='base64')
+    b.decryptFile(rzipfile1+'.encrypt', key, IV, mode='cbc',
+                  padding='pkcs7', coding='base64')
     print('文件解密成功。')
-    z=zipfile.ZipFile(rzipfile1+'.encrypt.decrypt','r')
+    z = zipfile.ZipFile(rzipfile1+'.encrypt.decrypt', 'r')
     z.extractall(pathB)
     z.close()
     print('文件解压成功，得到原始文件和签名。')
     a = RSASignature(AlicePublicKey)
-    a.check(rfile+'.sign',rfile)
+    a.check(rfile+'.sign', rfile)
 
 
 generateKey()
