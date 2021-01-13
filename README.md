@@ -4,9 +4,9 @@
 
 ## 特性
 
-能够生成PEM格式的RSA密钥，于[这个网站](http://ctf.ssleye.com/)可以解析以测试。
+能够生成PEM格式的RSA密钥，[这个网站](http://ctf.ssleye.com/)可以解析。
 
-仅适合练习或理解密码使用，加密解密效率极低。
+仅适合练习或理解密码使用，加密解密效率极低，如因错误的商业使用造成损失概不负责。
 
 ## 程序结构
 
@@ -47,7 +47,7 @@
 
 我为什么改了名，希望大家ke设自己做，如果做得好是可以当作项目经历的，同时能锻炼自己的能力，复习所学。用这个项目里的程序来对拍，尽量别抄。
 
-**别卷了别卷了。**
+**别卷了。**
 
 > ## 版权说明
 > Cryptography-System is an [GPL](https://github.com/CCWUCMCTS/Cryptography-System/blob/main/LICENSE) Free Program.
