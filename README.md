@@ -51,5 +51,7 @@
 
 > ## 版权说明
 > Cryptography-System is an [GPL](https://github.com/CCWUCMCTS/Cryptography-System/blob/main/LICENSE) Free Program.
+> 
 > **注意：基于本项目源码从事科研、论文、系统开发，请在文中或系统中表明来自于本项目的内容和创意。**
+> 
 > PS: GPL保证你可以合法忽略以上注意事项但不能保证你不受鄙视，呵呵。
