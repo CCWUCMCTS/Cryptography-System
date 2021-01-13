@@ -1,3 +1,12 @@
+'''
+文件名: diffiehellman.py
+介绍: 
+时间: 2021/01/13 19:32:44
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
+
 from Crypto.Util import number
 from Crypto.Random import random
 from time import sleep

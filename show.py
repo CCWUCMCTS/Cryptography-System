@@ -1,3 +1,12 @@
+'''
+文件名: show.py
+介绍: 
+时间: 2021/01/13 19:36:03
+作者: CCWUCMCTS
+版本: 1.0
+'''
+
+
 import base64
 import os
 import zipfile
