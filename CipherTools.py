@@ -67,6 +67,17 @@ def cutNumber2List(num, total, piece):
 
 
 def mergeList2Number(inputs, piece):
+    """
+    函数描述:
+    将列表中的等二进制位数字合成一个数字。
+
+    参数:
+    @inputs：需要合并的数字列表。
+    @piece：每个数字的二进制位数。
+
+    返回值:
+    一个数字，即合并结果。
+    """
     ret = 0
     for input in inputs:
         ret <<= piece
@@ -75,16 +86,47 @@ def mergeList2Number(inputs, piece):
 
 
 def b2i(x):
+    """
+    函数描述:
+    将字节流转换为一个数字。
+
+    参数:
+    @x：待转换的字节流。
+
+    返回值:
+    一个数字，即转换结果。
+    """
     return int.from_bytes(x, 'big')
 
 
 def i2b(x, num=-1):
+    """
+    函数描述:
+    将数字转换为指定长度的字节流。
+
+    参数:
+    @x：待转换的数字。
+    @num：转换后的字节数，为-1时自动按不截取的最小转换。
+
+    返回值:
+    返回一个字节流，即数字转换的结果。
+    """
     if num == -1:
         num = (len(hex(x)[2:]) + 1) // 2
     return int.to_bytes(x, num, 'big')
 
 
 def byte2bit(bytek):
+    """
+    函数描述:
+    将字节流转换为二进制位。
+
+    参数:
+    @bytek：待转换的字节流。
+
+    返回值:
+    返回一个项只为0或1的列表，代表字节转换成的二进制位。
+    """
     ret = []
     for i in bytek:
         # print(i)
@@ -96,6 +138,16 @@ def byte2bit(bytek):
 
 
 def bit2byte(bits):
+    """
+    函数描述:
+    将二进制位转换为字节流。
+
+    参数:
+    @bits：待转换的二进制列表。
+
+    返回值:
+    返回一个字节流，即二进制位的转换结果。
+    """
     ret = []
     for i in range(0, len(bits), 8):
         ret.append(bit2int(bits[i:i+8]))
@@ -103,6 +155,16 @@ def bit2byte(bits):
 
 
 def bit2int(bits):
+    """
+    函数描述:
+    将二进制位转成数值。
+
+    参数:
+    @bits：待转换的二进制列表。
+
+    返回值:
+    一个整数，表示二进制位转换成的数值。
+    """
     ret = 0
     for bit in bits:
         ret <<= 1
@@ -111,6 +173,16 @@ def bit2int(bits):
 
 
 def nhex(n):
+    """
+    函数描述:
+    返回数字的十六进制表示的字符串，长度总为2的倍数。
+
+    参数:
+    @n：整数。
+
+    返回值:
+    返回数字的十六进制表示字符串。
+    """
     ret = hex(n)[2:]
     if len(ret) % 2 == 1:
         return '0' + ret
@@ -119,16 +191,50 @@ def nhex(n):
 
 
 def showbytes(b):
+    """
+    函数描述:
+    得到一个字节流的十六进制表示。
+
+    参数:
+    @b：字节流。
+
+    返回值:
+    返回字节流的十六进制表示字符串。
+    """
     return ''.join([nhex(i) for i in list(b)])
 
 
 def gcd(a, b):
+    """
+    函数描述:
+    计算两个数的最大公约数，循环形式。
+
+    参数:
+    @a：其中一个数字。
+    @b：其中一个数字。
+
+    返回值:
+    两个数的最大公约数。
+    """
     while b != 0:
         a, b = b, a % b
     return a
 
 
 def exgcd(a, b):
+    """
+    函数描述:
+    计算x、y，使x*a+y*b=gcd(a,b)
+
+    参数:
+    @a：其中一个数字。
+    @b：其中一个数字。
+
+    返回值:
+    @x：计算结果
+    @y：计算结果
+    @b：gcd(a,b)
+    """
     x0 = 1
     y0 = 0
     x1 = 0
@@ -152,6 +258,18 @@ def exgcd(a, b):
 
 
 def i2b_ASN1(n):
+    """
+    函数描述:
+    将数字转换为字节，返回字节流及其长度。
+    供ASN.1相关函数使用。
+
+    参数:
+    @n：待转换的数字。
+
+    返回值:
+    length：字节流的长度。
+    data：字节流。
+    """
     length = (len(bin(n)[2:]) + 7) // 8
     data = int.to_bytes(n, length, 'big')
     return length, data
@@ -180,6 +298,9 @@ def derInteger(n):
 
 
 def derTag(data):
+    '''
+    ASN.1标准中，TAG数据类型号为30。
+    '''
     if len(data) < 128:
         return b'\x30' + int.to_bytes(len(data), 1, 'big') + data
     else:
@@ -188,6 +309,9 @@ def derTag(data):
 
 
 def derBitString(data):
+    '''
+    ASN.1标准中，BITSTRING数据类型号为03。
+    '''
     data = b'\x00' + data
     if len(data) < 128:
         return b'\x03' + int.to_bytes(len(data), 1, 'big') + data
@@ -197,6 +321,9 @@ def derBitString(data):
 
 
 def derOctetString(data):
+    '''
+    ASN.1标准中，OCTETSTRING数据类型号为04。
+    '''
     if len(data) < 128:
         return b'\x04' + int.to_bytes(len(data), 1, 'big') + data
     else:
@@ -205,7 +332,9 @@ def derOctetString(data):
 
 
 def derRSAPublicKey(n, e):
-
+    '''
+    生成RSA公钥的der格式字节流并转换为pem格式。
+    '''
     data = derBitString(derTag(derInteger(n)+derInteger(e)))
 
     data = b'\x30\x0d\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x01\x01\x05\x00' + data
@@ -220,6 +349,9 @@ def derRSAPublicKey(n, e):
 
 
 def derRSAPrivateKey(n, e, d, p, q):
+    '''
+    生成RSA私钥的der格式字节流并转换为pem格式。
+    '''
     para1 = d % (p - 1)
     para2 = d % (q - 1)
     para3 = inv(q, p)
@@ -238,26 +370,52 @@ def derRSAPrivateKey(n, e, d, p, q):
     return ret
 
 
-'''
-def exgcd(a,b):     
-    if b == 0:         
-        return 1, 0, a     
-    else:         
-        x, y, q = exgcd(b, a % b)        
-        x, y = y, (x - (a // b) * y)         
-        return x, y, q
-        '''
-
 def addm(a1, a2, mod=2**32):
+    """
+    函数描述:
+    带模的加。
+
+    参数:
+    @a1：加数。
+    @a2：加数。
+    @a3：模数。
+
+    返回值:
+    返回(a1+a2)%mod。
+    """
     return (a1+a2) % mod
 
-def i2LittleStr(number, cnt):
+
+def i2LittleStr(number, cnt=-1):
+    """
+    函数描述:
+    数字转换为字节，逆转为小端序，返回十六进制字符串。
+
+    参数:
+    @number：待转换的数字。
+    @cnt：转换后的字节数，详细看i2b。
+
+    返回值:
+    返回十六进制字符串。
+    """
     lst = i2b(number, cnt)[::-1]
     ret = ''
     for i in lst:
         ret += hex(i)[2:]
     return ret
+
+
 def inv(a, b):
+    """
+    函数描述:
+    计算a关于b的逆元。
+
+    参数:
+    见描述。
+
+    返回值:
+    若a和b不互质，返回-1，否则返回a关于b的逆元。
+    """
     x, _, z = exgcd(a, b)
     if z != 1:
         return -1
@@ -265,6 +423,16 @@ def inv(a, b):
 
 
 def speed(a, b, p):
+    """
+    函数描述:
+    快速幂，计算a^b mod p。
+
+    参数:
+    见描述。
+
+    返回值:
+    返回计算结果
+    """
     ans = 1
     cur = a % p
     while b != 0:
@@ -276,6 +444,17 @@ def speed(a, b, p):
 
 
 def Miller_Rabin(n, k=5):
+    """
+    函数描述:
+    使用Miller_Rabin方法检验素数。
+
+    参数:
+    @n：待检验的数字。
+    @k：检验的次数。随机选取k个底数进行测试算法的失误率大概为4^(-k)。
+
+    返回值:
+    返回True或False表示是否为素数。
+    """
     if n <= 1000:
         return n in pri
     t = n - 1
@@ -299,6 +478,16 @@ def Miller_Rabin(n, k=5):
 
 
 def getPrime(n):
+    """
+    函数描述:
+    获得一个n位的素数。
+
+    参数:
+    @n：素数的位数。
+
+    返回值:
+    返回n位的素数。
+    """
     while(True):
         num = int('1'+''.join([str(randint(0, 1)) for i in range(n-2)])+'1', 2)
         if Miller_Rabin(num):
@@ -320,5 +509,6 @@ if __name__ == "__main__":
     #for i in x:
         #print(i.decode('utf-8'))
     '''
-    print(inv(7,18))
-    print(speed(2,7,19))
+    print(inv(7, 18))
+    print(speed(2, 7, 19))
+    print(exgcd(2, 3))
