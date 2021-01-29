@@ -101,10 +101,10 @@ class MD5():
         A, B, C, D = self.IV_A, self.IV_B, self.IV_C, self.IV_D
         for block in blocks:
             A, B, C, D = self.aBlockHash(A, B, C, D, block)
-        A = i2LittleStr(A, 4)
-        B = i2LittleStr(B, 4)
-        C = i2LittleStr(C, 4)
-        D = i2LittleStr(D, 4)
+        A = i2LittleStr(A, 4).rjust(8,'0')
+        B = i2LittleStr(B, 4).rjust(8,'0')
+        C = i2LittleStr(C, 4).rjust(8,'0')
+        D = i2LittleStr(D, 4).rjust(8,'0')
         return (A+B+C+D).upper()
 
     # 文件hash

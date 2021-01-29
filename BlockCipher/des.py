@@ -193,6 +193,7 @@ class DES():
 
     # 密钥生成
     def generateKey(self, key64):
+        self.key=[]
         if len(key64) != 8:
             raise('初始密钥长度错误。')
         bits = byte2bit(key64)
