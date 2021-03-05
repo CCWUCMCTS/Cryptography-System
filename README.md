@@ -54,7 +54,7 @@
 
 如果执意要直接使用本项目作为你的ke设，**请不要传播造成内卷**，并尊重著作权。
 
-以下说明摘自某OJ，我曾经见到有人把这个OJ改得面目全非，仅在html里才找到没删干净的只言片语。把这段话放在这里，提醒我们每个人都有责任建设这个尊重、包容、开放的开源环境。
+以下说明源自某OJ，我曾经见到有人把这个OJ改得面目全非，仅在html里才找到没删干净的只言片语。把这段话放在这里，提醒我们每个人都有责任建设这个尊重、包容、开放的开源环境。
 
 > ## 版权说明
 > Cryptography-System is an [GPL](https://github.com/CCWUCMCTS/Cryptography-System/blob/main/LICENSE) Free Program.
